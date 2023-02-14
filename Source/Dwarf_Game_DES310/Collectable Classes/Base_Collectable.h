@@ -4,23 +4,43 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/CapsuleComponent.h"
 #include "Base_Collectable.generated.h"
 
 UCLASS()
 class DWARF_GAME_DES310_API ABase_Collectable : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	ABase_Collectable();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	float mf_yawRotation;
+	float mf_yOffset;
 
-public:	
+	bool mb_Bounce;
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	UPROPERTY(VisibleAnywhere)
+		UStaticMeshComponent* m_Mesh;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		class UCapsuleComponent* Collider;
+
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		float rotationSpeed;
+
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		float bounceSpeed;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		float mf_CollectValue;
 
 };
