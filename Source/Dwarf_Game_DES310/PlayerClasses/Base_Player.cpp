@@ -9,7 +9,8 @@ ABase_Player::ABase_Player()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	SpringArmcomp = CreateDefaultSubobject<USpringArmComponent>(FName(TEXT("SpingArm")));
-	SpringArmcomp->SocketOffset = FVector(0, 0, 100);
+	SpringArmcomp->SocketOffset = FVector(0, 70, 65);
+	SpringArmcomp->TargetArmLength = 150;
 	SpringArmcomp->SetupAttachment(GetCapsuleComponent());
 
 
