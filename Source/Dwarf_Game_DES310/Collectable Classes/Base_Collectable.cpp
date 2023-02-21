@@ -15,9 +15,11 @@ ABase_Collectable::ABase_Collectable()
 	Collider->SetRelativeLocation(FVector(0, 0, 60.f));
 	Collider->SetSimulatePhysics(true);
 
-	m_Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BaseMesh"));;
+	m_Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BaseMesh"));
 	m_Mesh->SetupAttachment(Collider);
 
+
+	
 }
 
 // Called when the game starts or when spawned
