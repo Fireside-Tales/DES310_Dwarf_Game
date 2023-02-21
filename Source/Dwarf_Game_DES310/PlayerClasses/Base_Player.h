@@ -35,4 +35,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Camera)
 		UCameraComponent* camera;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+		UChildActorComponent* m_Pickaxe;
+
 };

@@ -2,6 +2,7 @@
 
 
 #include "Base_Collectable.h"
+#include "Components/CapsuleComponent.h"
 
 // Sets default values
 ABase_Collectable::ABase_Collectable()

@@ -17,6 +17,9 @@ ABase_Player::ABase_Player()
 	camera = CreateDefaultSubobject<UCameraComponent>(FName(TEXT("Camera")));
 	camera->SetupAttachment(SpringArmcomp);
 
+	m_Pickaxe = CreateDefaultSubobject<UChildActorComponent>(FName(TEXT("Pickaxe")));
+	m_Pickaxe->SetupAttachment(this->GetMesh());
+
 }
 
 // Called when the game starts or when spawned
