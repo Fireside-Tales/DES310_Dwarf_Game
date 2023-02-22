@@ -32,6 +32,17 @@ struct FPlayerStats
 
 };
 
+UENUM(BlueprintType)
+enum PlayerStates
+{
+	Idle,
+	Moving,
+	Attacking,
+	Throwing,
+	Catching,
+	Dead
+};
+
 UCLASS()
 class DWARF_GAME_DES310_API ABase_Player : public ACharacter
 {
@@ -60,6 +71,9 @@ public:
 		UCameraComponent* camera;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 		UChildActorComponent* m_Pickaxe;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite,Category = Playerstats)
 		FPlayerStats m_PlayerStats;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite , Category = Playerstats)
+		TEnumAsByte <PlayerStates> m_PlayerStates;
 };

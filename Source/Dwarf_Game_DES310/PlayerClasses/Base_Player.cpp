@@ -13,6 +13,7 @@ ABase_Player::ABase_Player()
 	SpringArmcomp->TargetArmLength = 150;
 	SpringArmcomp->SetupAttachment(GetCapsuleComponent());
 
+	m_PlayerStates = PlayerStates::Idle;
 
 	camera = CreateDefaultSubobject<UCameraComponent>(FName(TEXT("Camera")));
 	camera->SetupAttachment(SpringArmcomp);

@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "GameFramework/Character.h"
 #include "AI_Actor.generated.h"
 
 UCLASS()
-class DWARF_GAME_DES310_API AAI_Actor : public AActor
+class DWARF_GAME_DES310_API AAI_Actor : public ACharacter
 {
 	GENERATED_BODY()
 	
