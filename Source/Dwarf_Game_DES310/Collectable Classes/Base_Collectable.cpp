@@ -54,7 +54,6 @@ ABase_Collectable::ABase_Collectable()
 
 
 	m_Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BaseMesh"));
-	m_Mesh->SetStaticMesh(ModelLoader());
 	m_Mesh->SetupAttachment(Collider);
 
 
