@@ -6,10 +6,22 @@
 #include "GameFramework/Actor.h"
 #include "Base_Collectable.generated.h"
 
+UENUM(BlueprintType)
+enum CollectibleType
+{
+	Health,
+	MaxHealth,
+	SwingSpeed,
+	MoveSpeed,
+	Strength
+};
+
 UCLASS()
 class DWARF_GAME_DES310_API ABase_Collectable : public AActor
 {
 	GENERATED_BODY()
+private:
+	UStaticMesh* ModelLoader();
 
 public:
 	// Sets default values for this actor's properties
@@ -18,15 +30,19 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	UFUNCTION()
+		void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+
 	float mf_yawRotation;
 	float mf_yOffset;
-
 	bool mb_Bounce;
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		UStaticMeshComponent* m_Mesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
@@ -41,5 +57,8 @@ public:
 		float bounceSpeed;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		float mf_CollectValue;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Type)
+		TEnumAsByte<CollectibleType> m_CollectibleType;
 
 };

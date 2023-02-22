@@ -3,6 +3,37 @@
 
 #include "Base_Collectable.h"
 #include "Components/CapsuleComponent.h"
+#include "UObject/ConstructorHelpers.h"
+#include "Math/RandomStream.h"
+#include "Dwarf_Game_DES310/PlayerClasses/Base_Player.h"
+
+UStaticMesh* ABase_Collectable::ModelLoader()
+{
+	UStaticMesh* Asset;
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>* MeshAsset;
+	switch (m_CollectibleType)
+	{
+	case CollectibleType::Health:
+		MeshAsset = new ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("/Place_holder/Iris/IrisHeart"));
+		break;
+	case CollectibleType::MaxHealth:
+		MeshAsset = new ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("/Place_holder/Elsa/Elsa"));
+		break;
+	case CollectibleType::SwingSpeed:
+		MeshAsset = new ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("/Place_holder/Coco/Coco"));
+		break;
+	case CollectibleType::MoveSpeed:
+		MeshAsset = new ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("/Place_holder/Penguin/rat_01"));
+		break;
+	case CollectibleType::Strength:
+		MeshAsset = new ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("/Place_holder/Riku/Riku"));
+		break;
+	}
+
+	Asset = MeshAsset->Object;
+	return Asset;
+
+}
 
 // Sets default values
 ABase_Collectable::ABase_Collectable()
@@ -16,11 +47,17 @@ ABase_Collectable::ABase_Collectable()
 	Collider->SetRelativeLocation(FVector(0, 0, 60.f));
 	Collider->SetSimulatePhysics(true);
 
+	FRandomStream meshSelector;
+	meshSelector.GenerateNewSeed();
+
+	m_CollectibleType = static_cast<CollectibleType>(meshSelector.RandRange(0,4));
+
+
 	m_Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BaseMesh"));
+	m_Mesh->SetStaticMesh(ModelLoader());
 	m_Mesh->SetupAttachment(Collider);
 
 
-	
 }
 
 // Called when the game starts or when spawned
@@ -28,7 +65,10 @@ void ABase_Collectable::BeginPlay()
 {
 	Super::BeginPlay();
 
+
 }
+
+
 
 // Called every frame
 void ABase_Collectable::Tick(float DeltaTime)
@@ -54,8 +94,33 @@ void ABase_Collectable::Tick(float DeltaTime)
 		}
 	}
 
-	m_Mesh->SetRelativeLocation(FVector(0,0, mf_yOffset));
+	m_Mesh->SetRelativeLocation(FVector(0, 0, mf_yOffset));
 	m_Mesh->SetRelativeRotation(FRotator(0, mf_yawRotation, 0));
 
+}
+void ABase_Collectable::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	ABase_Player* player = Cast<ABase_Player>(OtherActor);
+	if (IsValid(player))
+	{
+		switch (m_CollectibleType)
+		{
+		case CollectibleType::Health:
+			player->m_PlayerStats.mf_Health += mf_CollectValue;
+			break;
+		case CollectibleType::MaxHealth:
+			player->m_PlayerStats.mf_MaxHealth += mf_CollectValue;
+			break;
+		case CollectibleType::SwingSpeed:
+			player->m_PlayerStats.mf_SwingSpeed += mf_CollectValue;
+			break;
+		case CollectibleType::MoveSpeed:
+			player->m_PlayerStats.mf_Movespeed += mf_CollectValue;
+			break;
+		case CollectibleType::Strength:
+			player->m_PlayerStats.mf_Strength += mf_CollectValue;
+			break;
+		}
+	}
 }
 
