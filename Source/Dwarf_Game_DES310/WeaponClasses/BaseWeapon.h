@@ -26,8 +26,9 @@ public:
 	UPROPERTY(VisibleAnywhere)
 		UStaticMeshComponent* m_Mesh;
 
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-		class UCapsuleComponent* Collider;
+		USceneComponent* m_PivotPoint;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		USceneComponent* m_LodgePoint;
 
 };
