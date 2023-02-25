@@ -41,8 +41,8 @@ public:
 
 	FVector mv_InitLoc;
 	FVector mv_TargLoc;
-	FVector mv_ImapctLoc;
-	FVector m_ImpactNormal;
+	FVector mv_ImpactLoc;
+	FVector mv_ImpactNormal;
 	FVector mv_ThrowDir;
 	FVector mv_CameraLoc;
 	FVector mv_AxeLocationLastTick;
@@ -66,6 +66,7 @@ public:
 	float mf_ReturnSpinRate;
 	float mf_ImpulseStrength;
 	float mf_AxeSpinOffset;
+	float mf_SpinLength; 
 
 
 	int mi_ReturnSpins;
@@ -90,7 +91,7 @@ protected:
 	void AxeLodgePull(float pull);
 	void ReturnPosition(float rot1, float rot2, float vectorCurve, float speedCurve, USkeletalMeshComponent* skeleton); 
 	void ReturnSpin(float TimelineSpeed);
-	void ReturnSpineAfterTime(float newPitch);
+	void ReturnSpinAfterTime(float newPitch);
 	float AdjustAxeImpactPitch();
 	float GetClampedAxeDistanceFromChar(USkeletalMeshComponent* skeleton);
 	FVector CalculateImpulseDirection();

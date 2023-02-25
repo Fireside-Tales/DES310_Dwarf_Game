@@ -4,7 +4,9 @@
 #include "PickaxeProjectile.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Dwarf_Game_DES310/PlayerClasses/Base_Player.h"
+#include <Kismet/KismetMathLibrary.h>
 
 // Sets default values
 APickaxeProjectile::APickaxeProjectile()
@@ -40,7 +42,33 @@ void APickaxeProjectile::SnapToStart()
 
 FVector APickaxeProjectile::AdjustAxeImpactLocation()
 {
-	return FVector();
+
+	FVector finalVector; 
+
+	FRotator tempRot = UKismetMathLibrary::MakeRotationFromAxes(mv_ImpactNormal.ForwardVector, FVector(), FVector());
+
+	float pitch = tempRot.Pitch; 
+	
+	if (pitch > 0)  // checks if the pitch is greater than 0
+	{
+		pitch = 90 - pitch;  // if so it sets the pitch to be 90 - pitch
+	}
+	else 
+	{
+		pitch = 90; // otherwise it is 90 
+	}
+	pitch /= 90.f; // divides the pitch by 90
+	pitch *= 10.f; // multiplies it by 10
+
+	mf_Z_Adjustment = pitch;// sets the z_Adjustment to be the new pitch value
+
+	mv_ImpactLoc += FVector(0, 0, pitch); // adds the pitch to the impact location 
+
+	finalVector = GetActorLocation() -  m_LodgePoint->GetComponentTransform().GetLocation();  // subtracts the lodgepoints world location from the actors location
+
+	finalVector = mv_ImpactLoc + finalVector; // adds the result of the finalvector to the impact normal 
+
+	return finalVector; // returns the final result
 }
 
 
@@ -80,7 +108,7 @@ void APickaxeProjectile::ReturnPosition(float rot1, float rot2, float vectorCurv
 	FVector targetLoc = playerRef->camera->GetRightVector(); // gets the right vector of the camera thta is viewing it
 
 	FVector socketLocation = skeleton->GetSocketLocation("HandSocket"); // gets the location of where the axe should be lodged into the model
-	FRotator socketRotation = skeleton->GetSocketRotation("HandSocket"); 
+	FRotator socketRotation = skeleton->GetSocketRotation("HandSocket");
 
 	targetLoc += socketLocation; // adds the sockets location to the target location
 
@@ -89,37 +117,86 @@ void APickaxeProjectile::ReturnPosition(float rot1, float rot2, float vectorCurv
 	FRotator newRotation = FRotator(mr_CameraRot.Pitch, mr_CameraRot.Yaw, mr_CameraRot.Roll + mf_ReturnTilt); // gets the cameras rotation with a offset in the roll for the return tilt
 
 	FRotator lerpRot = FMath::Lerp(mr_InitRot, newRotation, rot1);
-	FRotator finalRotation = FMath::Lerp(lerpRot, socketRotation, rot2); 
+	FRotator finalRotation = FMath::Lerp(lerpRot, socketRotation, rot2);
 
 	SetActorLocationAndRotation(mv_ReturnTargetLocations, finalRotation); // sets the actors location and final rotation 
 }
 
 void APickaxeProjectile::ReturnSpin(float TimelineSpeed)
 {
+	float duration;
+	float timer;
+	duration = 1 / TimelineSpeed;
+
+	mi_ReturnSpins = FMath::RoundToInt(duration / mf_ReturnSpinRate); // this sets how many times the axe should spin on return
+
+	//used for calculating the return length 
+	mf_SpinLength = duration - 0.055f;
+	mf_SpinLength /= mi_ReturnSpins;
+	mf_SpinLength = 1 / mf_SpinLength;
+
+	timer = duration - 0.87f;
+
+	FLatentActionInfo actionInfo;
+
+
+	FTimerHandle timerHandle;
+
+	GetWorld()->GetTimerManager().SetTimer(timerHandle, [&]()
+		{
+			// insert audio here
+		}, duration, false);
+
 }
 
-void APickaxeProjectile::ReturnSpineAfterTime(float newPitch)
+void APickaxeProjectile::ReturnSpinAfterTime(float newPitch)
 {
+	m_PivotPoint->SetRelativeRotation(FRotator(newPitch * 360, 0, 0));
 }
 
 float APickaxeProjectile::AdjustAxeImpactPitch()
 {
+	float InclineSurface = FMath::RandRange(-30, -55);
+	float RegularRange = FMath::RandRange(-5, 25);
+
+	FRotator rot = UKismetMathLibrary::MakeRotationFromAxes(mv_ImpactNormal.ForwardVector, FVector(), FVector());
+	if (rot.Pitch > 0)
+	{
+		return RegularRange - rot.Pitch;
+	}
+	else
+	{
+		return InclineSurface - rot.Pitch;
+	}
 	return 0.0f;
 }
 
 float APickaxeProjectile::GetClampedAxeDistanceFromChar(USkeletalMeshComponent* skeleton)
 {
-	return 0.0f;
+	FVector socketLoc = skeleton->GetSocketLocation("HandSocket"); // gets the location of the hand socket
+
+	FVector finalVector = GetActorLocation() - socketLoc; // gets the final vector from the hand socket and the actors current position 
+
+	return FMath::Clamp(finalVector.Length(), 0, mf_MaxDistance);
 }
 
 FVector APickaxeProjectile::CalculateImpulseDirection()
 {
-	return FVector();
+	FVector vel = GetVelocity();
+	vel.Normalize(0.0001); 
+
+	return vel;
 }
 
 float APickaxeProjectile::AdjustAxeReturnTimelineSpeed(float OptimalDistance, float AxeReturnSpeed)
 {
-	return 0.0f;
+	float finalValue; 
+
+	finalValue = OptimalDistance * AxeReturnSpeed; 
+
+	finalValue /= mf_DistanceFromChar; 
+
+	return FMath::Clamp(finalValue,0.4f,7.0f);
 }
 
 void APickaxeProjectile::ThrowAxe()
@@ -159,8 +236,8 @@ void APickaxeProjectile::Catch(USceneComponent* newParent)
 
 void APickaxeProjectile::HandleImpact(FVector ImpactNormal, FVector ImpactLocation)
 {
-	mv_ImapctLoc = ImpactLocation;
-	m_ImpactNormal = ImpactNormal;
+	mv_ImpactLoc = ImpactLocation;
+	mv_ImpactNormal = ImpactNormal;
 
 	PickMovement->Deactivate(); // stops the movement of the pickaxe
 }
