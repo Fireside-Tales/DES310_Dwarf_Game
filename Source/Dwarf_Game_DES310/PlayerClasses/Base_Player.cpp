@@ -3,6 +3,7 @@
 
 #include "Base_Player.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 
 // Sets default values
@@ -37,12 +38,32 @@ void ABase_Player::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (mb_Aiming)
+	{
+		FRotator AimRotation;
+		FVector PlayerLoc = GetActorLocation();
+		FVector forwardLocation = PlayerLoc + camera->GetForwardVector();
+
+		FRotator newRot = UKismetMathLibrary::FindLookAtRotation(PlayerLoc, forwardLocation);
+
+		AimRotation = FRotator(0,UKismetMathLibrary::RInterpTo(GetActorRotation(), newRot, DeltaTime, 20.f).Yaw,0); 
+
+		GetCapsuleComponent()->SetWorldRotation(AimRotation);
+	}
+
 }
 
 // Called to bind functionality to input
 void ABase_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	InputComponent->BindAction("Aim", IE_Pressed, this, &ABase_Player::Aim);
+	InputComponent->BindAction("Aim", IE_Released, this, &ABase_Player::ReleaseAim);
+
+
+
+
 
 }
 
@@ -66,6 +87,9 @@ void ABase_Player::ReleaseAim()
 {
 	mb_Aiming = false;
 
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Mouse Released")));
+
+
 	//if (m_AimHud)
 	//{
 	//	m_AimHud->RemoveFromViewport();
@@ -84,5 +108,22 @@ void ABase_Player::SetSocketOffset(float input)
 void ABase_Player::LerpCamera(float alpha)
 {
 	//FVector camVec = 
+}
+
+void ABase_Player::HandlePlayerStates()
+{
+	if (GetCharacterMovement()->Velocity.Length() == 0)
+	{
+		m_PlayerStates = PlayerStates::Idle;
+	}
+	else
+	{
+		m_PlayerStates = PlayerStates::Moving;
+	}
+
+
+
+
+
 }
 

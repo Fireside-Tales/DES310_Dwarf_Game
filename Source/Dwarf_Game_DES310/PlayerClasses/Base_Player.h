@@ -79,6 +79,8 @@ protected:
 	void SetSocketOffset(float input);
 	void LerpCamera(float alpha);
 
+	UFUNCTION(BlueprintCallable, Category = "Player States")
+		void HandlePlayerStates();
 
 public:
 	// Called every frame

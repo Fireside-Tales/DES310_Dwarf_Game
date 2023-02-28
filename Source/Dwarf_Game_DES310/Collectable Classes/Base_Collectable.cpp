@@ -94,5 +94,7 @@ void ABase_Collectable::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAct
 			break;
 		}
 	}
+
+	Destroy(); 
 }
 

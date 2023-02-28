@@ -22,7 +22,9 @@ APickaxeProjectile::APickaxeProjectile()
 void APickaxeProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-
+	PickMovement->Deactivate();
+	//PickMovement->ProjectileGravityScale = 0;
+	//PickMovement->SetVelocityInLocalSpace(FVector());
 }
 
 // Called every frame
