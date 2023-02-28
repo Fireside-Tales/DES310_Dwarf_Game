@@ -9,6 +9,40 @@
 #include "Camera/CameraComponent.h"
 #include "Base_Player.generated.h"
 
+USTRUCT(BlueprintType)
+struct FPlayerStats
+{
+	GENERATED_BODY()
+
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
+		bool isAlive = true;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
+		float mf_MaxHealth;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
+		float mf_BaseMovespeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
+		float mf_BaseStrength;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
+		float mf_BaseSwingSpeed;
+
+	float mf_Health;
+	float mf_Movespeed;
+	float mf_Strength;
+	float mf_SwingSpeed;
+
+};
+
+UENUM(BlueprintType)
+enum PlayerStates
+{
+	Idle,
+	Moving,
+	Attacking,
+	Throwing,
+	Catching,
+	Dead
+};
+
 UCLASS()
 class DWARF_GAME_DES310_API ABase_Player : public ACharacter
 {
@@ -35,4 +69,11 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Camera)
 		UCameraComponent* camera;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+		UChildActorComponent* m_Pickaxe;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite,Category = Playerstats)
+		FPlayerStats m_PlayerStats;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite , Category = Playerstats)
+		TEnumAsByte <PlayerStates> m_PlayerStates;
 };

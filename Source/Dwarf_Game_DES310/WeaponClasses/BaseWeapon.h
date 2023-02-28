@@ -23,4 +23,11 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(VisibleAnywhere)
+		UStaticMeshComponent* m_Mesh;
+
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		class UCapsuleComponent* Collider;
+
 };
