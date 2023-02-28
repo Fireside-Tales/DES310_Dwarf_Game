@@ -76,6 +76,7 @@ protected:
 
 	void Aim();
 	void ReleaseAim();
+	void ThrowAxe(); 
 	void SetSocketOffset(float input);
 	void LerpCamera(float alpha);
 

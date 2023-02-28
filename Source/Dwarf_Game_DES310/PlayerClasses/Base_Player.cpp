@@ -46,7 +46,7 @@ void ABase_Player::Tick(float DeltaTime)
 
 		FRotator newRot = UKismetMathLibrary::FindLookAtRotation(PlayerLoc, forwardLocation);
 
-		AimRotation = FRotator(0,UKismetMathLibrary::RInterpTo(GetActorRotation(), newRot, DeltaTime, 20.f).Yaw,0); 
+		AimRotation = FRotator(0, UKismetMathLibrary::RInterpTo(GetActorRotation(), newRot, DeltaTime, 20.f).Yaw, 0);
 
 		GetCapsuleComponent()->SetWorldRotation(AimRotation);
 	}
@@ -60,10 +60,6 @@ void ABase_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 	InputComponent->BindAction("Aim", IE_Pressed, this, &ABase_Player::Aim);
 	InputComponent->BindAction("Aim", IE_Released, this, &ABase_Player::ReleaseAim);
-
-
-
-
 
 }
 
@@ -99,6 +95,10 @@ void ABase_Player::ReleaseAim()
 	mf_CameraTurnRate = 50.f;
 	GetCharacterMovement()->MaxWalkSpeed = 500.0f;
 
+}
+
+void ABase_Player::ThrowAxe()
+{
 }
 
 void ABase_Player::SetSocketOffset(float input)
