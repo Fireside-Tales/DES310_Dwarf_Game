@@ -35,6 +35,9 @@ void ABase_Player::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (m_PlayerStates == PlayerStates::Dead) {
+		mf_CurrentRespawnTimer -= DeltaTime;
+	}
 }
 
 // Called to bind functionality to input
@@ -42,5 +45,22 @@ void ABase_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	InputComponent->BindAction("ReduceRespawnTimer", IE_Pressed, this, &ABase_Player::RespawnPlayer);
+}
+
+void ABase_Player::RespawnPlayer()
+{
+	if (InputComponent) {
+
+		if (m_PlayerStates == PlayerStates::Dead) {
+			if (mf_CurrentRespawnTimer == 0) {
+				m_PlayerStates = PlayerStates::Respawning;
+			}
+			else {
+				mf_CurrentRespawnTimer-=0.01;
+
+			}
+		}
+	}
 }
 

@@ -40,7 +40,8 @@ enum PlayerStates
 	Attacking,
 	Throwing,
 	Catching,
-	Dead
+	Dead,
+	Respawning
 };
 
 UCLASS()
@@ -63,6 +64,8 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	void RespawnPlayer();
+
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Camera)
 		USpringArmComponent* SpringArmcomp;
@@ -76,4 +79,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite , Category = Playerstats)
 		TEnumAsByte <PlayerStates> m_PlayerStates;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Playerstats)
+		float mf_CurrentRespawnTimer;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PlayerStats)
+		float mf_MaxRespawnTimer = 1;
 };
