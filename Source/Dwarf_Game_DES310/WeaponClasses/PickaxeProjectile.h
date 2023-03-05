@@ -66,11 +66,11 @@ public:
 	float mf_ReturnSpinRate;
 	float mf_ImpulseStrength;
 	float mf_AxeSpinOffset;
-	float mf_SpinLength; 
+	float mf_SpinLength;
 
 
 	int mi_ReturnSpins;
-	
+
 	bool mb_isWiggle;
 	bool mb_Thrown;
 
@@ -80,16 +80,22 @@ public:
 		class ABase_Player* playerRef;
 
 
-protected:
-	void ThrowAxe();
+	UFUNCTION(BlueprintCallable)
+		void ThrowAxe();
+	UFUNCTION(BlueprintCallable)
 	void RecallLaunched();
+	UFUNCTION(BlueprintCallable)
 	void LaunchAxe();
-	void Catch(USceneComponent* newParent); 
+
+	UFUNCTION(BlueprintCallable)
+	void Catch(USceneComponent* newParent);
+protected:
+
 	void HandleImpact(FVector ImpactNormal, FVector ImpactLocation);
 	void LodgeAxe();
 	void AdjustAxeReturnLocation();
 	void AxeLodgePull(float pull);
-	void ReturnPosition(float rot1, float rot2, float vectorCurve, float speedCurve, USkeletalMeshComponent* skeleton); 
+	void ReturnPosition(float rot1, float rot2, float vectorCurve, float speedCurve, USkeletalMeshComponent* skeleton);
 	void ReturnSpin(float TimelineSpeed);
 	void ReturnSpinAfterTime(float newPitch);
 	float AdjustAxeImpactPitch();

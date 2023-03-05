@@ -16,6 +16,8 @@ APickaxeProjectile::APickaxeProjectile()
 	PickMovement = CreateDefaultSubobject<UProjectileMovementComponent>(FName(TEXT("Pick Movement")));
 
 
+	mf_AxeThrowSpeed = 2500.f; 
+
 }
 
 // Called when the game starts or when spawned
@@ -208,6 +210,10 @@ void APickaxeProjectile::ThrowAxe()
 	mv_ThrowDir = playerRef->camera->GetForwardVector();
 
 	mb_Thrown = true;
+
+	
+	SnapToStart(); 
+	LaunchAxe();
 }
 
 void APickaxeProjectile::RecallLaunched()

@@ -40,8 +40,10 @@ enum PlayerStates
 	Moving,
 	Attacking,
 	Throwing,
+	Aiming,
 	Catching,
-	Dead
+	Dead,
+	Respawning
 };
 
 UCLASS()
@@ -63,25 +65,41 @@ protected:
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	//	UUserWidget* m_AimHud;
 
-	bool mb_Aiming;
 	bool mb_UseContRotation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Axe Throw")
+	bool mb_Aiming;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Axe Throw")
+	bool mb_axeThrown = false;
+
+		
 
 	FVector mv_CameraVec;
 	FVector mv_RangedCameraVec;
+	FVector mv_desiredSocketOffset;
 
 	float mf_CameraTurnRate;
 	float mf_GamepadTurnRate;
 	float mf_SpringIdleLength;
 	float mf_SpringAimLength;
 
-	void Aim();
-	void ReleaseAim();
-	void ThrowAxe(); 
-	void SetSocketOffset(float input);
-	void LerpCamera(float alpha);
+
+
+	UFUNCTION(BlueprintCallable, Category = "Axe Throw")
+		void Aim();
+	UFUNCTION(BlueprintCallable, Category = "Axe Throw")
+		void ReleaseAim();
+	UFUNCTION(BlueprintCallable, Category = "Axe Throw")
+		void ThrowAxe();
+	UFUNCTION(BlueprintCallable, Category = "Axe Throw")
+		void SetSocketOffset(float input);
+	UFUNCTION(BlueprintCallable, Category = "Axe Throw")
+		void LerpCamera(float alpha);
 
 	UFUNCTION(BlueprintCallable, Category = "Player States")
 		void HandlePlayerStates();
+
+	void InitialiseCamera(); 
 
 public:
 	// Called every frame
