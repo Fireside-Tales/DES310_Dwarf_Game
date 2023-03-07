@@ -122,7 +122,11 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Playerstats)
 		TEnumAsByte <PlayerStates> m_PlayerStates;
 
-
+	UFUNCTION(BlueprintCallable, Category = "Player Skeleton")
+		USkeletalMeshComponent* GetSkeleton()
+	{
+		return GetMesh();
+	}
 
 
 };

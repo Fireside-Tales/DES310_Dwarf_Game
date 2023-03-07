@@ -203,6 +203,56 @@ float APickaxeProjectile::AdjustAxeReturnTimelineSpeed(float OptimalDistance, fl
 	return FMath::Clamp(finalValue,0.4f,7.0f);
 }
 
+
+void APickaxeProjectile::InitialiseReturnVariables()
+{
+	mf_DistanceFromChar = GetClampedAxeDistanceFromChar(playerRef->GetMesh()); 
+
+	AdjustAxeReturnLocation(); 
+
+	mv_InitLoc = GetActorLocation(); 
+	mr_InitRot = GetActorRotation();
+
+	mr_CameraRot = playerRef->camera->GetComponentRotation(); 
+
+	m_LodgePoint->SetRelativeRotation(FRotator::ZeroRotator); 
+}
+
+void APickaxeProjectile::InitialiseReturnTrace()
+{
+	mv_AxeLocationLastTick = mv_ReturnTargetLocations; 
+}
+
+bool APickaxeProjectile::LineTraceMethod(FHitResult& OutHit)
+{
+	FVector start = GetActorLocation(); 
+	FVector end = GetVelocity();
+
+	end.Normalize(0.0001f); 
+	end *= mf_ThrowTraceDis; 
+	end = GetActorLocation() + end; 
+
+	FCollisionQueryParams parameters; 
+
+	
+
+	return GetWorld()->LineTraceSingleByChannel(OutHit, start, end,ECC_Visibility,parameters);
+}
+
+bool APickaxeProjectile::SphereTrace(FHitResult& OutHit)
+{
+	FVector start = mv_ReturnTargetLocations;
+	FVector end = mv_AxeLocationLastTick; 
+
+	TArray<AActor*> ignoreActors; 
+
+	return UKismetSystemLibrary::SphereTraceSingle(GetWorld(),start,end,25.0f, ETraceTypeQuery::TraceTypeQuery1, false, ignoreActors, EDrawDebugTrace::None, OutHit, true);
+}
+
+
+
+
+
 void APickaxeProjectile::ThrowAxe()
 {
 	mr_CameraRot = playerRef->camera->GetComponentRotation();

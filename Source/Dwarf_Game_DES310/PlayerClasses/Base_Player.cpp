@@ -147,7 +147,7 @@ void ABase_Player::LerpCamera(float alpha)
 
 void ABase_Player::HandlePlayerStates()
 {
-	if(mb_Aiming == false && m_PlayerStates)
+	if(mb_Aiming == false)
 	{
 		if (m_PlayerStates != PlayerStates::Throwing) 
 		{

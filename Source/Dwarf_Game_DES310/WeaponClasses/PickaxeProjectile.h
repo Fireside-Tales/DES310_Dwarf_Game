@@ -58,11 +58,18 @@ public:
 	float mf_Z_Adjustment;
 	float mf_MaxDistance;
 	float mf_DistanceFromChar;
-	float mf_OptimalDis;
-	float mf_AxeReturnSpeed;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		float mf_OptimalDis;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		float mf_AxeReturnSpeed;
+
 	float mf_AxeReturnScale;
 	float mf_ReturnTilt;
-	float mf_AxeSpin;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		float mf_AxeSpin;
+
 	float mf_ReturnSpinRate;
 	float mf_ImpulseStrength;
 	float mf_AxeSpinOffset;
@@ -76,35 +83,60 @@ public:
 
 	FName mn_BoneName;
 
+
+
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		class ABase_Player* playerRef;
 
+	UFUNCTION(BlueprintCallable)
+		void InitialiseReturnVariables();
+
+	UFUNCTION(BlueprintCallable)
+		void InitialiseReturnTrace();
+
+	UFUNCTION(BlueprintCallable)
+		bool LineTraceMethod(FHitResult& OutHit);
+
+	UFUNCTION(BlueprintCallable)
+		bool SphereTrace(FHitResult& OutHit);
 
 	UFUNCTION(BlueprintCallable)
 		void ThrowAxe();
 	UFUNCTION(BlueprintCallable)
-	void RecallLaunched();
+		void RecallLaunched();
 	UFUNCTION(BlueprintCallable)
-	void LaunchAxe();
+		void LaunchAxe();
 
 	UFUNCTION(BlueprintCallable)
-	void Catch(USceneComponent* newParent);
+		void Catch(USceneComponent* newParent);
 protected:
+	UFUNCTION(BlueprintCallable)
+		void HandleImpact(FVector ImpactNormal, FVector ImpactLocation);
+	UFUNCTION(BlueprintCallable)
+		void LodgeAxe();
+	UFUNCTION(BlueprintCallable)
+		void AdjustAxeReturnLocation();
+	UFUNCTION(BlueprintCallable)
+		void AxeLodgePull(float pull);
+	UFUNCTION(BlueprintCallable)
+		void ReturnPosition(float rot1, float rot2, float vectorCurve, float speedCurve, USkeletalMeshComponent* skeleton);
+	UFUNCTION(BlueprintCallable)
+		void ReturnSpin(float TimelineSpeed);
+	UFUNCTION(BlueprintCallable)
+		void ReturnSpinAfterTime(float newPitch);
+	UFUNCTION(BlueprintCallable)
+		float AdjustAxeImpactPitch();
+	UFUNCTION(BlueprintCallable)
+		float GetClampedAxeDistanceFromChar(USkeletalMeshComponent* skeleton);
+	UFUNCTION(BlueprintCallable)
+		FVector CalculateImpulseDirection();
+	UFUNCTION(BlueprintCallable)
+		FVector AdjustAxeImpactLocation();
+	UFUNCTION(BlueprintCallable)
+		void SnapToStart();
 
-	void HandleImpact(FVector ImpactNormal, FVector ImpactLocation);
-	void LodgeAxe();
-	void AdjustAxeReturnLocation();
-	void AxeLodgePull(float pull);
-	void ReturnPosition(float rot1, float rot2, float vectorCurve, float speedCurve, USkeletalMeshComponent* skeleton);
-	void ReturnSpin(float TimelineSpeed);
-	void ReturnSpinAfterTime(float newPitch);
-	float AdjustAxeImpactPitch();
-	float GetClampedAxeDistanceFromChar(USkeletalMeshComponent* skeleton);
-	FVector CalculateImpulseDirection();
-	FVector AdjustAxeImpactLocation();
-
-	void SnapToStart();
-
-	float AdjustAxeReturnTimelineSpeed(float OptimalDistance, float AxeReturnSpeed);
+	UFUNCTION(BlueprintCallable)
+		float AdjustAxeReturnTimelineSpeed(float OptimalDistance, float AxeReturnSpeed);
 
 };
