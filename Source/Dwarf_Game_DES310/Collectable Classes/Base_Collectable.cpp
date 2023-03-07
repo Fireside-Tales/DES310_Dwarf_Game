@@ -7,33 +7,7 @@
 #include "Math/RandomStream.h"
 #include "Dwarf_Game_DES310/PlayerClasses/Base_Player.h"
 
-UStaticMesh* ABase_Collectable::ModelLoader()
-{
-	UStaticMesh* Asset;
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>* MeshAsset;
-	switch (m_CollectibleType)
-	{
-	case CollectibleType::Health:
-		MeshAsset = new ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("/Place_holder/Iris/IrisHeart"));
-		break;
-	case CollectibleType::MaxHealth:
-		MeshAsset = new ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("/Place_holder/Elsa/Elsa"));
-		break;
-	case CollectibleType::SwingSpeed:
-		MeshAsset = new ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("/Place_holder/Coco/Coco"));
-		break;
-	case CollectibleType::MoveSpeed:
-		MeshAsset = new ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("/Place_holder/Penguin/rat_01"));
-		break;
-	case CollectibleType::Strength:
-		MeshAsset = new ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("/Place_holder/Riku/Riku"));
-		break;
-	}
 
-	Asset = MeshAsset->Object;
-	return Asset;
-
-}
 
 // Sets default values
 ABase_Collectable::ABase_Collectable()
@@ -54,7 +28,6 @@ ABase_Collectable::ABase_Collectable()
 
 
 	m_Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BaseMesh"));
-	m_Mesh->SetStaticMesh(ModelLoader());
 	m_Mesh->SetupAttachment(Collider);
 
 
