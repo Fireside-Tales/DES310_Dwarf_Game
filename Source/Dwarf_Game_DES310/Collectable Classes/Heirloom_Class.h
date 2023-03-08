@@ -29,4 +29,8 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		class UCapsuleComponent* Collider;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pivots)
+		USceneComponent* m_HeirloomPivot;
+
 };

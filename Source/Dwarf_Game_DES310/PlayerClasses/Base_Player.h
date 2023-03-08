@@ -76,4 +76,8 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite , Category = Playerstats)
 		TEnumAsByte <PlayerStates> m_PlayerStates;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pivots)
+		USceneComponent* m_PlayerHeirloomPivot;
+
 };

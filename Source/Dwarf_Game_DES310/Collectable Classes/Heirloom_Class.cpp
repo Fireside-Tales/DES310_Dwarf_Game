@@ -17,10 +17,13 @@ AHeirloom_Class::AHeirloom_Class()
 	Collider->SetRelativeLocation(FVector(0, 0, 60.f));
 	Collider->SetSimulatePhysics(true);
 
+	m_HeirloomPivot = CreateDefaultSubobject<UStaticMeshComponent>(FName(TEXT("Heirloom Pivot")));
+
 
 	m_Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BaseMesh"));
-	m_Mesh->SetupAttachment(Collider);
-
+	m_Mesh->SetupAttachment(Collider);//mesh attaching to the collider
+	m_HeirloomPivot->SetupAttachment(m_Mesh);//Pivot point attaching to the mesh
+	
 }
 
 // Called when the game starts or when spawned

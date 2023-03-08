@@ -21,6 +21,10 @@ ABase_Player::ABase_Player()
 	m_Pickaxe = CreateDefaultSubobject<UChildActorComponent>(FName(TEXT("Pickaxe")));
 	m_Pickaxe->SetupAttachment(this->GetMesh());
 
+	m_PlayerHeirloomPivot = CreateDefaultSubobject<UStaticMeshComponent>(FName(TEXT("Player Heirloom Pivot")));
+	m_PlayerHeirloomPivot->SetupAttachment(this->GetMesh());//Pivot point attaching to the mesh
+
+
 }
 
 // Called when the game starts or when spawned
