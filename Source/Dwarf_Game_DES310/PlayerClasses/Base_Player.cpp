@@ -57,6 +57,7 @@ void ABase_Player::StealHeirloom()
 		if (mb_IsPlayerInRange) {
 			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("BUTTON PRESSED"));
 			m_heirloom->SnapToPlayer(m_PlayerHeirloomPivot);
+			mb_HasHeirloom = true;
 		}
 	}
 }
