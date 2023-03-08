@@ -239,7 +239,7 @@ bool APickaxeProjectile::LineTraceMethod(FHitResult& OutHit)
 	return GetWorld()->LineTraceSingleByChannel(OutHit, start, end,ECC_Visibility,parameters);
 }
 
-bool APickaxeProjectile::SphereTrace(FHitResult& OutHit)
+bool APickaxeProjectile::InitSphereTrace(FHitResult& OutHit)
 {
 	FVector start = mv_ReturnTargetLocations;
 	FVector end = mv_AxeLocationLastTick; 
@@ -284,7 +284,7 @@ void APickaxeProjectile::LaunchAxe()
 void APickaxeProjectile::Catch(USceneComponent* newParent)
 {
 
-	FAttachmentTransformRules attachRules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true); // tells the axe how to attach back to the player. 
+	FAttachmentTransformRules attachRules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, true); // tells the axe how to attach back to the player. 
 	AttachToComponent(newParent, attachRules, "HandSocket"); // this attaches the weapon to the player on the handSocket
 
 	mb_Thrown = false;

@@ -68,11 +68,10 @@ protected:
 	bool mb_UseContRotation;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Axe Throw")
-	bool mb_Aiming;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Axe Throw")
-	bool mb_axeThrown = false;
+		bool mb_Aiming;
 
-		
+
+
 
 	FVector mv_CameraVec;
 	FVector mv_RangedCameraVec;
@@ -99,7 +98,7 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Player States")
 		void HandlePlayerStates();
 
-	void InitialiseCamera(); 
+	void InitialiseCamera();
 
 public:
 	// Called every frame

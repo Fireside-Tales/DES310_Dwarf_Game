@@ -41,7 +41,8 @@ public:
 
 	FVector mv_InitLoc;
 	FVector mv_TargLoc;
-	FVector mv_ImpactLoc;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Axe Throw Stats")
+		FVector mv_ImpactLoc;
 	FVector mv_ImpactNormal;
 	FVector mv_ThrowDir;
 	FVector mv_CameraLoc;
@@ -79,7 +80,9 @@ public:
 	int mi_ReturnSpins;
 
 	bool mb_isWiggle;
-	bool mb_Thrown;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		bool mb_Thrown;
 
 	FName mn_BoneName;
 
@@ -99,7 +102,7 @@ public:
 		bool LineTraceMethod(FHitResult& OutHit);
 
 	UFUNCTION(BlueprintCallable)
-		bool SphereTrace(FHitResult& OutHit);
+		bool InitSphereTrace(FHitResult& OutHit);
 
 	UFUNCTION(BlueprintCallable)
 		void ThrowAxe();
