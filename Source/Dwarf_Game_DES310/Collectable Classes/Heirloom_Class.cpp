@@ -40,3 +40,9 @@ void AHeirloom_Class::Tick(float DeltaTime)
 
 }
 
+void AHeirloom_Class::SnapToPlayer(USceneComponent* dwarfHeirloomPivot)
+{
+	FAttachmentTransformRules heirloomAttachRules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepRelative, true);
+	AttachToComponent(dwarfHeirloomPivot, heirloomAttachRules, "None");//Attaches the heirloom on the player
+}
+

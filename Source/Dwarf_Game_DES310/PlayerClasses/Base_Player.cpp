@@ -39,12 +39,25 @@ void ABase_Player::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	
 }
 
 // Called to bind functionality to input
 void ABase_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	
+	InputComponent->BindAction("StealHeirloom", IE_Pressed, this, &ABase_Player::StealHeirloom);
 
+}
+
+void ABase_Player::StealHeirloom()
+{
+	if (!mb_HasHeirloom) {
+		if (mb_IsPlayerInRange) {
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("BUTTON PRESSED"));
+			m_heirloom->SnapToPlayer(m_PlayerHeirloomPivot);
+		}
+	}
 }
 

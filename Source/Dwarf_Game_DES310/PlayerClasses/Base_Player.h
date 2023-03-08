@@ -7,7 +7,11 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Dwarf_Game_DES310/Collectable Classes/Heirloom_Class.h"
+
+
 #include "Base_Player.generated.h"
+
 
 USTRUCT(BlueprintType)
 struct FPlayerStats
@@ -63,6 +67,8 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	void StealHeirloom();
+
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Camera)
 		USpringArmComponent* SpringArmcomp;
@@ -80,4 +86,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pivots)
 		USceneComponent* m_PlayerHeirloomPivot;
 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool mb_IsPlayerInRange;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool mb_HasHeirloom;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		AHeirloom_Class* m_heirloom;
 };
