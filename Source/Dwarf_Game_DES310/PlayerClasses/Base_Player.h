@@ -73,8 +73,11 @@ protected:
 
 
 
-	FVector mv_CameraVec;
-	FVector mv_RangedCameraVec;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
+		FVector mv_CameraVec;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
+		FVector mv_RangedCameraVec;
 	FVector mv_desiredSocketOffset;
 
 	float mf_CameraTurnRate;
