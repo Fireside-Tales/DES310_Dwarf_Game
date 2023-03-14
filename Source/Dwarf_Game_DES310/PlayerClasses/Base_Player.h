@@ -82,8 +82,11 @@ protected:
 
 	float mf_CameraTurnRate;
 	float mf_GamepadTurnRate;
-	float mf_SpringIdleLength;
-	float mf_SpringAimLength;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
+		float mf_SpringIdleLength;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
+		float mf_SpringAimLength;
 
 
 

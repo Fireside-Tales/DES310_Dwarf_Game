@@ -166,7 +166,7 @@ void ABase_Player::HandlePlayerStates()
 
 void ABase_Player::InitialiseCamera()
 {
-	mv_CameraVec = FVector(0, 0, 0); // starting location for the camera
+	mv_CameraVec = FVector(0, 20, 45); // starting location for the camera
 	mv_RangedCameraVec = FVector(0, 60, 65); // aimed location for the camera 
 
 	mf_SpringIdleLength = 150.f; // starting length of the camera
