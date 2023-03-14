@@ -61,4 +61,5 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Type)
 		TEnumAsByte<CollectibleType> m_CollectibleType;
 
+
 };
