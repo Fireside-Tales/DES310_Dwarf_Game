@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "BaseWeapon.h"
 #include "Camera/CameraComponent.h"
+#include "Components/AudioComponent.h"
 #include "PickaxeProjectile.generated.h"
 
 UENUM(BlueprintType)
@@ -35,13 +36,15 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-		class UProjectileMovementComponent* PickMovement;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UProjectileMovementComponent* PickMovement;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		TEnumAsByte<AxeStates> AxeState = AxeStates::Idle;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UCameraComponent* m_Camera;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")
+		UAudioComponent* m_AudioComponent;
 
 
 	FVector mv_InitLoc;
@@ -148,4 +151,6 @@ protected:
 	UFUNCTION(BlueprintCallable)
 		float AdjustAxeReturnTimelineSpeed(float OptimalDistance, float AxeReturnSpeed);
 
+	UFUNCTION(BlueprintCallable)
+		void InitVariables(UProjectileMovementComponent* projectileMovement, USceneComponent* pivotPoint, USceneComponent* lodgePoint, UCameraComponent* camera);
 };

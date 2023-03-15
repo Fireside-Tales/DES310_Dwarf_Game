@@ -8,6 +8,7 @@
 #include "Dwarf_Game_DES310/PlayerClasses/Base_Player.h"
 #include <Kismet/KismetMathLibrary.h>
 
+
 // Sets default values
 APickaxeProjectile::APickaxeProjectile()
 {
@@ -15,6 +16,11 @@ APickaxeProjectile::APickaxeProjectile()
 	PrimaryActorTick.bCanEverTick = false;
 	PickMovement = CreateDefaultSubobject<UProjectileMovementComponent>(FName(TEXT("Pick Movement")));
 
+
+	m_AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
+	m_AudioComponent->bAutoActivate = false;
+	m_AudioComponent->SetupAttachment(RootComponent);
+	m_AudioComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 
 	mf_AxeThrowSpeed = 2500.f;
 
@@ -25,8 +31,8 @@ void APickaxeProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 	PickMovement->Deactivate();
-	//PickMovement->ProjectileGravityScale = 0;
-	//PickMovement->SetVelocityInLocalSpace(FVector());
+	PickMovement->ProjectileGravityScale = 0;
+	PickMovement->SetVelocityInLocalSpace(FVector());
 }
 
 // Called every frame
@@ -46,7 +52,7 @@ void APickaxeProjectile::SnapToStart()
 	//this->SetActorRotation(m_PivotPoint->GetRelativeRotation(), ETeleportType::None);
 	//this->SetActorLocationAndRotation()
 	//SetActorRotation(mr_CameraRot); 
-	this->SetActorLocationAndRotation(m_PivotPoint->GetRelativeLocation(), mr_CameraRot, false, 0, ETeleportType::None);
+	this->SetActorLocationAndRotation(m_PivotPoint->GetComponentLocation(), mr_CameraRot, false, 0, ETeleportType::None);
 }
 
 FVector APickaxeProjectile::AdjustAxeImpactLocation()
@@ -208,6 +214,14 @@ float APickaxeProjectile::AdjustAxeReturnTimelineSpeed(float OptimalDistance, fl
 	return FMath::Clamp(finalValue, 0.4f, 7.0f);
 }
 
+void APickaxeProjectile::InitVariables(UProjectileMovementComponent* projectileMovement, USceneComponent* pivotPoint, USceneComponent* lodgePoint, UCameraComponent* camera)
+{
+	m_PivotPoint = pivotPoint;
+	m_LodgePoint = lodgePoint;
+	m_Camera = camera;
+
+}
+
 
 void APickaxeProjectile::InitialiseReturnVariables()
 {
@@ -256,7 +270,7 @@ bool APickaxeProjectile::InitSphereTrace(FHitResult& OutHit)
 
 void APickaxeProjectile::ThrowAxe()
 {
-	mr_CameraRot = playerRef->camera->GetComponentRotation();
+	mr_CameraRot = m_Camera->GetComponentRotation();
 	mv_CameraLoc = m_Camera->GetComponentLocation();
 	mv_ThrowDir = m_Camera->GetForwardVector();
 	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("throw %f %f %f"), mv_ThrowDir.X, mv_ThrowDir.Y, mv_ThrowDir.Z));
@@ -276,12 +290,15 @@ void APickaxeProjectile::RecallLaunched()
 
 void APickaxeProjectile::LaunchAxe()
 {
-	PickMovement->Velocity = mv_ThrowDir * mf_AxeThrowSpeed; // calculates the movement speed
-	PickMovement->Activate(); // activates the movement component
+	if (PickMovement)
+	{
+		PickMovement->Velocity = mv_ThrowDir * mf_AxeThrowSpeed; // calculates the movement speed
+		PickMovement->Activate(); // activates the movement component
 
-	AxeState = AxeStates::Launched; // sets the axe state to launched
+		AxeState = AxeStates::Launched; // sets the axe state to launched
 
-	PickMovement->ProjectileGravityScale = 0.f; // disables the gravity of the projectile
+		PickMovement->ProjectileGravityScale = 0.f; // disables the gravity of the projectile	
+	}
 }
 
 void APickaxeProjectile::Catch(USceneComponent* newParent)
