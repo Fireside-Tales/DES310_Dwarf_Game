@@ -16,7 +16,7 @@ APickaxeProjectile::APickaxeProjectile()
 	PickMovement = CreateDefaultSubobject<UProjectileMovementComponent>(FName(TEXT("Pick Movement")));
 
 
-	mf_AxeThrowSpeed = 2500.f; 
+	mf_AxeThrowSpeed = 2500.f;
 
 }
 
@@ -38,26 +38,31 @@ void APickaxeProjectile::Tick(float DeltaTime)
 
 void APickaxeProjectile::SnapToStart()
 {
-	mv_CameraLoc += mv_ThrowDir * 250; // snaps the axe to the centre of the screen
+	mv_CameraLoc += (mv_ThrowDir * 250); // snaps the axe to the centre of the screen
 
-	FVector newLocation = mv_CameraLoc - m_PivotPoint->GetRelativeLocation();  // gets the new location for the axe
-	this->SetActorLocationAndRotation(newLocation, mr_CameraRot, false, 0, ETeleportType::None);
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Camera %f %f %f"), mr_CameraRot.Pitch, mr_CameraRot.Yaw, mr_CameraRot.Roll));
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Pivot %f %f %f"), m_PivotPoint->GetRelativeLocation().X, m_PivotPoint->GetRelativeLocation().Y, m_PivotPoint->GetRelativeLocation().Z));
+
+	//this->SetActorRotation(m_PivotPoint->GetRelativeRotation(), ETeleportType::None);
+	//this->SetActorLocationAndRotation()
+	//SetActorRotation(mr_CameraRot); 
+	this->SetActorLocationAndRotation(m_PivotPoint->GetRelativeLocation(), mr_CameraRot, false, 0, ETeleportType::None);
 }
 
 FVector APickaxeProjectile::AdjustAxeImpactLocation()
 {
 
-	FVector finalVector; 
+	FVector finalVector;
 
 	FRotator tempRot = UKismetMathLibrary::MakeRotationFromAxes(mv_ImpactNormal.ForwardVector, FVector(), FVector());
 
-	float pitch = tempRot.Pitch; 
-	
+	float pitch = tempRot.Pitch;
+
 	if (pitch > 0)  // checks if the pitch is greater than 0
 	{
 		pitch = 90 - pitch;  // if so it sets the pitch to be 90 - pitch
 	}
-	else 
+	else
 	{
 		pitch = 90; // otherwise it is 90 
 	}
@@ -68,7 +73,7 @@ FVector APickaxeProjectile::AdjustAxeImpactLocation()
 
 	mv_ImpactLoc += FVector(0, 0, pitch); // adds the pitch to the impact location 
 
-	finalVector = GetActorLocation() -  m_LodgePoint->GetComponentTransform().GetLocation();  // subtracts the lodgepoints world location from the actors location
+	finalVector = GetActorLocation() - m_LodgePoint->GetComponentTransform().GetLocation();  // subtracts the lodgepoints world location from the actors location
 
 	finalVector = mv_ImpactLoc + finalVector; // adds the result of the finalvector to the impact normal 
 
@@ -187,83 +192,81 @@ float APickaxeProjectile::GetClampedAxeDistanceFromChar(USkeletalMeshComponent* 
 FVector APickaxeProjectile::CalculateImpulseDirection()
 {
 	FVector vel = GetVelocity();
-	vel.Normalize(0.0001); 
+	vel.Normalize(0.0001);
 
 	return vel;
 }
 
 float APickaxeProjectile::AdjustAxeReturnTimelineSpeed(float OptimalDistance, float AxeReturnSpeed)
 {
-	float finalValue; 
+	float finalValue;
 
-	finalValue = OptimalDistance * AxeReturnSpeed; 
+	finalValue = OptimalDistance * AxeReturnSpeed;
 
-	finalValue /= mf_DistanceFromChar; 
+	finalValue /= mf_DistanceFromChar;
 
-	return FMath::Clamp(finalValue,0.4f,7.0f);
+	return FMath::Clamp(finalValue, 0.4f, 7.0f);
 }
 
 
 void APickaxeProjectile::InitialiseReturnVariables()
 {
-	mf_DistanceFromChar = GetClampedAxeDistanceFromChar(playerRef->GetMesh()); 
+	mf_DistanceFromChar = GetClampedAxeDistanceFromChar(playerRef->GetMesh());
 
-	AdjustAxeReturnLocation(); 
+	AdjustAxeReturnLocation();
 
-	mv_InitLoc = GetActorLocation(); 
+	mv_InitLoc = GetActorLocation();
 	mr_InitRot = GetActorRotation();
 
-	mr_CameraRot = playerRef->camera->GetComponentRotation(); 
+	mr_CameraRot = playerRef->camera->GetComponentRotation();
 
-	m_LodgePoint->SetRelativeRotation(FRotator::ZeroRotator); 
+	m_LodgePoint->SetRelativeRotation(FRotator::ZeroRotator);
 }
 
 void APickaxeProjectile::InitialiseReturnTrace()
 {
-	mv_AxeLocationLastTick = mv_ReturnTargetLocations; 
+	mv_AxeLocationLastTick = mv_ReturnTargetLocations;
 }
 
 bool APickaxeProjectile::LineTraceMethod(FHitResult& OutHit)
 {
-	FVector start = GetActorLocation(); 
+	FVector start = GetActorLocation();
 	FVector end = GetVelocity();
 
-	end.Normalize(0.0001f); 
-	end *= mf_ThrowTraceDis; 
-	end = GetActorLocation() + end; 
+	end.Normalize(0.0001f);
+	end *= mf_ThrowTraceDis;
+	end = GetActorLocation() + end;
 
-	FCollisionQueryParams parameters; 
+	FCollisionQueryParams parameters;
 
-	
 
-	return GetWorld()->LineTraceSingleByChannel(OutHit, start, end,ECC_Visibility,parameters);
+
+	return GetWorld()->LineTraceSingleByChannel(OutHit, start, end, ECC_Visibility, parameters);
 }
 
 bool APickaxeProjectile::InitSphereTrace(FHitResult& OutHit)
 {
 	FVector start = mv_ReturnTargetLocations;
-	FVector end = mv_AxeLocationLastTick; 
+	FVector end = mv_AxeLocationLastTick;
 
-	TArray<AActor*> ignoreActors; 
+	TArray<AActor*> ignoreActors;
 
-	return UKismetSystemLibrary::SphereTraceSingle(GetWorld(),start,end,25.0f, ETraceTypeQuery::TraceTypeQuery1, false, ignoreActors, EDrawDebugTrace::None, OutHit, true);
+	return UKismetSystemLibrary::SphereTraceSingle(GetWorld(), start, end, 25.0f, ETraceTypeQuery::TraceTypeQuery1, false, ignoreActors, EDrawDebugTrace::None, OutHit, true);
 }
-
-
-
-
 
 void APickaxeProjectile::ThrowAxe()
 {
 	mr_CameraRot = playerRef->camera->GetComponentRotation();
-	mv_CameraLoc = playerRef->camera->GetComponentLocation();
-	mv_ThrowDir = playerRef->camera->GetForwardVector();
+	mv_CameraLoc = m_Camera->GetComponentLocation();
+	mv_ThrowDir = m_Camera->GetForwardVector();
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("throw %f %f %f"), mv_ThrowDir.X, mv_ThrowDir.Y, mv_ThrowDir.Z));
 
 	mb_Thrown = true;
 
-	
-	SnapToStart(); 
+
+	SnapToStart();
 	LaunchAxe();
+
 }
 
 void APickaxeProjectile::RecallLaunched()
@@ -283,12 +286,10 @@ void APickaxeProjectile::LaunchAxe()
 
 void APickaxeProjectile::Catch(USceneComponent* newParent)
 {
-
 	FAttachmentTransformRules attachRules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, true); // tells the axe how to attach back to the player. 
 	AttachToComponent(newParent, attachRules, "HandSocket"); // this attaches the weapon to the player on the handSocket
 
 	mb_Thrown = false;
-
 	AxeState = AxeStates::Idle;
 }
 

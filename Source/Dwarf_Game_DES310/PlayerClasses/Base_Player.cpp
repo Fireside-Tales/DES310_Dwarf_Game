@@ -78,7 +78,6 @@ void ABase_Player::Aim()
 	//	m_AimHud->AddToViewport();
 	//}
 	mb_UseContRotation = true;
-	m_PlayerStates = PlayerStates::Aiming; 
 	mf_GamepadTurnRate = 0.75;
 	mf_CameraTurnRate = 30.f;
 	GetCharacterMovement()->MaxWalkSpeed = 250.0f;

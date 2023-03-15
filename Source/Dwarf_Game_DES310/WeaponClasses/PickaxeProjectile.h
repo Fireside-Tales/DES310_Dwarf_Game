@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "BaseWeapon.h"
+#include "Camera/CameraComponent.h"
 #include "PickaxeProjectile.generated.h"
 
 UENUM(BlueprintType)
@@ -38,6 +39,10 @@ public:
 		class UProjectileMovementComponent* PickMovement;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		TEnumAsByte<AxeStates> AxeState = AxeStates::Idle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UCameraComponent* m_Camera;
+
 
 	FVector mv_InitLoc;
 	FVector mv_TargLoc;
@@ -74,10 +79,11 @@ public:
 	float mf_ReturnSpinRate;
 	float mf_ImpulseStrength;
 	float mf_AxeSpinOffset;
-	float mf_SpinLength;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		float mf_SpinLength;
 
-
-	int mi_ReturnSpins;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		int mi_ReturnSpins;
 
 	bool mb_isWiggle;
 

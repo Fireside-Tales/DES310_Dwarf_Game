@@ -7,10 +7,11 @@
 // Sets default values
 ABaseWeapon::ABaseWeapon()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	m_PivotPoint = CreateDefaultSubobject<UStaticMeshComponent>(FName(TEXT("Pivot point")));
+
 
 	m_LodgePoint = CreateDefaultSubobject<UStaticMeshComponent>(FName(TEXT("Lodge Point")));
 	m_LodgePoint->SetRelativeLocation(FVector(12.93, 0, 18.87));
@@ -19,7 +20,7 @@ ABaseWeapon::ABaseWeapon()
 
 	m_Mesh = CreateDefaultSubobject<UStaticMeshComponent>(FName(TEXT("Pick")));
 	m_Mesh->SetCollisionProfileName(TEXT("OverlapAll"));
-	m_Mesh->SetRelativeLocation(FVector(-12.985,0, -18.4669));
+	m_Mesh->SetRelativeLocation(FVector(-12.985, 0, -18.4669));
 	m_Mesh->SetupAttachment(m_LodgePoint);
 
 }
@@ -28,7 +29,7 @@ ABaseWeapon::ABaseWeapon()
 void ABaseWeapon::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame
