@@ -152,19 +152,29 @@ void ABase_Player::LerpCamera(float alpha)
 
 void ABase_Player::HandlePlayerStates()
 {
-	if (mb_Aiming == false)
+	if (m_PlayerStats.mf_Health > 0)
 	{
-		if (m_PlayerStates != PlayerStates::Throwing)
+		if (mb_Aiming == false)
 		{
-			if (GetCharacterMovement()->Velocity.Length() == 0)
+			if (m_PlayerStates != (PlayerStates::Throwing))
 			{
-				m_PlayerStates = PlayerStates::Idle;
-			}
-			else
-			{
-				m_PlayerStates = PlayerStates::Moving;
+				if (m_PlayerStates != PlayerStates::Attacking)
+				{
+					if (GetCharacterMovement()->Velocity.Length() == 0)
+					{
+						m_PlayerStates = PlayerStates::Idle;
+					}
+					else
+					{
+						m_PlayerStates = PlayerStates::Moving;
+					}
+				}
 			}
 		}
+	}
+	else
+	{
+		m_PlayerStates = PlayerStates::Dead;
 	}
 }
 
