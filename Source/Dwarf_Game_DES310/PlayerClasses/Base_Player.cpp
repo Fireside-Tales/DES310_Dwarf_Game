@@ -25,6 +25,9 @@ ABase_Player::ABase_Player()
 	m_Pickaxe = CreateDefaultSubobject<UChildActorComponent>(FName(TEXT("Pickaxe")));
 	m_Pickaxe->SetupAttachment(this->GetMesh());
 
+	m_PlayerHeirloomPivot = CreateDefaultSubobject<UStaticMeshComponent>(FName(TEXT("Player Heirloom Pivot")));
+	m_PlayerHeirloomPivot->SetupAttachment(this->GetMesh());//Pivot point attaching to the mesh
+
 	InitialiseCamera(); // this sets up the camera for getting used for the aiming
 
 }
@@ -62,6 +65,9 @@ void ABase_Player::Tick(float DeltaTime)
 void ABase_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	InputComponent->BindAction("StealHeirloom", IE_Pressed, this, &ABase_Player::StealHeirloom);
+
 
 	//InputComponent->BindAction("Aim", IE_Pressed, this, &ABase_Player::Aim);
 	//InputComponent->BindAction("Aim", IE_Released, this, &ABase_Player::ReleaseAim);
@@ -174,3 +180,13 @@ void ABase_Player::InitialiseCamera()
 	SpringArmcomp->TargetArmLength = mf_SpringIdleLength;
 }
 
+void ABase_Player::StealHeirloom()
+{
+	if (!mb_HasHeirloom) {
+		if (mb_IsPlayerInRange) {
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("BUTTON PRESSED"));
+			m_heirloom->SnapToPlayer(m_PlayerHeirloomPivot);
+			mb_HasHeirloom = true;
+		}
+	}
+}
