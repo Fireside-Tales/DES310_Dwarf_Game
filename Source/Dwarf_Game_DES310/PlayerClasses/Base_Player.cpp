@@ -13,8 +13,8 @@ ABase_Player::ABase_Player()
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	SpringArmcomp = CreateDefaultSubobject<USpringArmComponent>(FName(TEXT("SpingArm")));
-	SpringArmcomp->SocketOffset = FVector(0, 70, 65);
-	SpringArmcomp->TargetArmLength = 150;
+	SpringArmcomp->SocketOffset = FVector(0, 20, 40);
+	SpringArmcomp->TargetArmLength = 125;
 	SpringArmcomp->SetupAttachment(GetCapsuleComponent());
 
 	m_PlayerStates = PlayerStates::Idle;
@@ -89,7 +89,7 @@ void ABase_Player::ReleaseAim()
 	mb_Aiming = false;
 
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Mouse Released")));
-	m_PlayerStates = PlayerStates::Idle; 
+	m_PlayerStates = PlayerStates::Idle;
 
 	//if (m_AimHud)
 	//{
@@ -123,32 +123,32 @@ void ABase_Player::ThrowAxe()
 
 void ABase_Player::SetSocketOffset(float input)
 {
-	input *= 0.5f; 
-	FVector newOffset; 
+	input *= 0.5f;
+	FVector newOffset;
 
 	newOffset.X = mv_desiredSocketOffset.X - (input * 12.0f);
 	newOffset.Y = mv_desiredSocketOffset.Y - (input * 4.0f);
 	newOffset.Z = mv_desiredSocketOffset.Z + (input * 3.0f);
 
-	SpringArmcomp->SocketOffset = newOffset; 
+	SpringArmcomp->SocketOffset = newOffset;
 
 }
 
 void ABase_Player::LerpCamera(float alpha)
 {
 	float armLength = UKismetMathLibrary::Lerp(mf_SpringIdleLength, mf_SpringAimLength, alpha);
-	FVector cameraPos = FMath::Lerp(mv_CameraVec, mv_RangedCameraVec,alpha);
+	FVector cameraPos = FMath::Lerp(mv_CameraVec, mv_RangedCameraVec, alpha);
 
-	SpringArmcomp->TargetArmLength = armLength; 
-	mv_desiredSocketOffset = cameraPos; 
-	SpringArmcomp->SocketOffset = cameraPos; 
+	SpringArmcomp->TargetArmLength = armLength;
+	mv_desiredSocketOffset = cameraPos;
+	SpringArmcomp->SocketOffset = cameraPos;
 }
 
 void ABase_Player::HandlePlayerStates()
 {
-	if(mb_Aiming == false)
+	if (mb_Aiming == false)
 	{
-		if (m_PlayerStates != PlayerStates::Throwing) 
+		if (m_PlayerStates != PlayerStates::Throwing)
 		{
 			if (GetCharacterMovement()->Velocity.Length() == 0)
 			{
@@ -157,22 +157,20 @@ void ABase_Player::HandlePlayerStates()
 			else
 			{
 				m_PlayerStates = PlayerStates::Moving;
-			}			
+			}
 		}
 	}
-	
 }
 
 void ABase_Player::InitialiseCamera()
 {
-	mv_CameraVec = FVector(0, 0, 0); // starting location for the camera
-	mv_RangedCameraVec = FVector(0, 60, 65); // aimed location for the camera 
+	mv_CameraVec = FVector(0, 20, 40); // starting location for the camera
+	mv_RangedCameraVec = FVector(0, 60, 50); // aimed location for the camera 
 
-	mf_SpringIdleLength = 150.f; // starting length of the camera
+	mf_SpringIdleLength = 125.f; // starting length of the camera
 	mf_SpringAimLength = 100.f;  // aim length for the camera
 
-	SpringArmcomp->SocketOffset = mv_CameraVec; 
-	SpringArmcomp->TargetArmLength = mf_SpringIdleLength; 
-
+	SpringArmcomp->SocketOffset = mv_CameraVec;
+	SpringArmcomp->TargetArmLength = mf_SpringIdleLength;
 }
 

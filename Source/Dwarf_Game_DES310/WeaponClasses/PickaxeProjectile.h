@@ -63,7 +63,7 @@ public:
 	FRotator mr_LodgePointRot;
 
 	float mf_AxeThrowSpeed;
-	float mf_ThrowTraceDis;
+	float mf_ThrowTraceDis = 60;
 	float mf_Z_Adjustment;
 	float mf_MaxDistance;
 	float mf_DistanceFromChar;
@@ -87,8 +87,8 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		int mi_ReturnSpins;
-
-	bool mb_isWiggle;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		bool mb_isWiggle;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		bool mb_Thrown;

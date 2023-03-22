@@ -30,9 +30,12 @@ APickaxeProjectile::APickaxeProjectile()
 void APickaxeProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-	PickMovement->Deactivate();
-	PickMovement->ProjectileGravityScale = 0;
-	PickMovement->SetVelocityInLocalSpace(FVector());
+	if (PickMovement)
+	{
+		PickMovement->Deactivate();
+		PickMovement->ProjectileGravityScale = 0;
+		PickMovement->SetVelocityInLocalSpace(FVector());
+	}
 }
 
 // Called every frame
@@ -320,6 +323,7 @@ void APickaxeProjectile::HandleImpact(FVector ImpactNormal, FVector ImpactLocati
 
 void APickaxeProjectile::LodgeAxe()
 {
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("LDGE")));
 	m_PivotPoint->SetRelativeRotation(FRotator(0, 0, 0));
 	SetActorRotation(mr_CameraRot);
 
