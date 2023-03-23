@@ -48,7 +48,10 @@ void ABase_Player::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-
+	if (m_PlayerStats.mf_Health <= 0) 
+	{
+		m_PlayerStats.isAlive = false;
+	}
 
 	if (mb_Aiming)
 	{

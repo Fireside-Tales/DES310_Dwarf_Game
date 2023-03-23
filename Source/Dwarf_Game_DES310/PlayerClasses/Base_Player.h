@@ -147,4 +147,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		AHeirloom_Class* m_heirloom;
 
+	UFUNCTION(BlueprintCallable)
+		void ReduceHealth(float h)
+	{
+		m_PlayerStats.mf_Health -= h;
+	}
+
 };
