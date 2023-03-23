@@ -89,7 +89,7 @@ void ABase_Player::ReleaseAim()
 	mb_Aiming = false;
 
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Mouse Released")));
-	if (m_PlayerStates != PlayerStates::Throwing) 
+	if (m_PlayerStates != PlayerStates::Throwing)
 	{
 		m_PlayerStates = PlayerStates::Idle;
 	}
@@ -150,8 +150,14 @@ void ABase_Player::HandlePlayerStates()
 	{
 		if (mb_Aiming == false)
 		{
-			if (m_PlayerStates != PlayerStates::Throwing) 
+			switch (m_PlayerStates)
 			{
+			case PlayerStates::Throwing:
+				break;
+			case PlayerStates::Attacking:
+
+				break;
+			default:
 				if (GetCharacterMovement()->Velocity.Length() == 0)
 				{
 					m_PlayerStates = PlayerStates::Idle;
@@ -159,9 +165,9 @@ void ABase_Player::HandlePlayerStates()
 				else
 				{
 					m_PlayerStates = PlayerStates::Moving;
-				}			
+				}
+				break;
 			}
-
 		}
 	}
 	else
