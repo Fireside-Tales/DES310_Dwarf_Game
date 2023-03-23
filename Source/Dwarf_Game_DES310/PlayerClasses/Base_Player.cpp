@@ -37,6 +37,10 @@ void ABase_Player::BeginPlay()
 {
 	Super::BeginPlay();
 
+	m_PlayerStats.mf_Health = m_PlayerStats.mf_MaxHealth;
+	m_PlayerStats.mf_Strength = m_PlayerStats.mf_BaseStrength;
+	m_PlayerStats.mf_Movespeed = m_PlayerStats.mf_BaseMovespeed;
+	m_PlayerStats.mf_SwingSpeed = m_PlayerStats.mf_SwingSpeed;
 }
 
 // Called every frame
@@ -67,22 +71,12 @@ void ABase_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	InputComponent->BindAction("StealHeirloom", IE_Pressed, this, &ABase_Player::StealHeirloom);
-
-
-	//InputComponent->BindAction("Aim", IE_Pressed, this, &ABase_Player::Aim);
-	//InputComponent->BindAction("Aim", IE_Released, this, &ABase_Player::ReleaseAim);
-	//InputComponent->BindAction("Throw", IE_Pressed, this, &ABase_Player::ThrowAxe); 
-
 }
 
 void ABase_Player::Aim()
 {
 	mb_Aiming = true;
-	//if (IsValid(m_Widget))
-	//{
-	//	m_AimHud = CreateWidget(GetWorld(), m_Widget);
-	//	m_AimHud->AddToViewport();
-	//}
+	m_PlayerStates = PlayerStates::Aiming;
 	mb_UseContRotation = true;
 	mf_GamepadTurnRate = 0.75;
 	mf_CameraTurnRate = 30.f;
@@ -95,12 +89,12 @@ void ABase_Player::ReleaseAim()
 	mb_Aiming = false;
 
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Mouse Released")));
-	m_PlayerStates = PlayerStates::Idle;
+	if (m_PlayerStates != PlayerStates::Throwing) 
+	{
+		m_PlayerStates = PlayerStates::Idle;
+	}
 
-	//if (m_AimHud)
-	//{
-	//	m_AimHud->RemoveFromViewport();
-	//}
+
 	mb_UseContRotation = false;
 	mf_GamepadTurnRate = 1.5;
 	mf_CameraTurnRate = 50.f;
@@ -152,29 +146,28 @@ void ABase_Player::LerpCamera(float alpha)
 
 void ABase_Player::HandlePlayerStates()
 {
-	if (m_PlayerStats.mf_Health > 0)
+	if (m_PlayerStats.isAlive)
 	{
 		if (mb_Aiming == false)
 		{
-			if (m_PlayerStates != (PlayerStates::Throwing))
+			if (m_PlayerStates != PlayerStates::Throwing) 
 			{
-				if (m_PlayerStates != PlayerStates::Attacking)
+				if (GetCharacterMovement()->Velocity.Length() == 0)
 				{
-					if (GetCharacterMovement()->Velocity.Length() == 0)
-					{
-						m_PlayerStates = PlayerStates::Idle;
-					}
-					else
-					{
-						m_PlayerStates = PlayerStates::Moving;
-					}
+					m_PlayerStates = PlayerStates::Idle;
 				}
+				else
+				{
+					m_PlayerStates = PlayerStates::Moving;
+				}			
 			}
+
 		}
 	}
 	else
 	{
 		m_PlayerStates = PlayerStates::Dead;
+		GEngine->AddOnScreenDebugMessage(-1, 0.1f, FColor::Blue, FString::Printf(TEXT("DEAD")));
 	}
 }
 
