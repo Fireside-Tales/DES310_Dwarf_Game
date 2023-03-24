@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "BaseWeapon.generated.h"
 
 UCLASS()
@@ -23,11 +24,11 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(VisibleAnywhere)
-		UStaticMeshComponent* m_Mesh;
 
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-		class UCapsuleComponent* Collider;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		USceneComponent* m_PivotPoint;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		USceneComponent* m_LodgePoint;
 
 };

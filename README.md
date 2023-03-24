@@ -1,5 +1,5 @@
 # DES310_Dwarf_Game
-This is the repository for the Dwarf Game made in DES310 by fireside tales
+This is the repository for the Dwarf Game made in DES310 by fireside tales.
 
 Team Members:
 Melina Garcia Ayala
@@ -10,6 +10,6 @@ Sarah Henderson
 Martin Taylor
 Alex Wood
 
-Locking main Branch
+Axe throw
 
-HAS IT LOCKED?
+LAST COMMIT BEFORE THE MERGE

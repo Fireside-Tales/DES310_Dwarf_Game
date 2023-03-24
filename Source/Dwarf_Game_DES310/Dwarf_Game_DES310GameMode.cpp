@@ -8,7 +8,7 @@ ADwarf_Game_DES310GameMode::ADwarf_Game_DES310GameMode()
 	: Super()
 {
 	// set default pawn class to our Blueprinted character
-	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnClassFinder(TEXT("/Game/FirstPerson/Blueprints/Player_Character"));
+	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnClassFinder(TEXT("/Game/Player/Blueprints/Player_Character"));
 	DefaultPawnClass = PlayerPawnClassFinder.Class;
 
 }

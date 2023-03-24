@@ -4,7 +4,7 @@
 #include "Base_Collectable.h"
 #include "Components/CapsuleComponent.h"
 #include "UObject/ConstructorHelpers.h"
-#include "Math/RandomStream.h"
+#include "Math/UnrealMathUtility.h"
 #include "Dwarf_Game_DES310/PlayerClasses/Base_Player.h"
 
 
@@ -21,12 +21,6 @@ ABase_Collectable::ABase_Collectable()
 	Collider->SetRelativeLocation(FVector(0, 0, 60.f));
 	Collider->SetSimulatePhysics(true);
 
-	FRandomStream meshSelector;
-	meshSelector.GenerateNewSeed();
-
-	m_CollectibleType = static_cast<CollectibleType>(meshSelector.RandRange(0,4));
-
-
 	m_Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BaseMesh"));
 	m_Mesh->SetupAttachment(Collider);
 
@@ -37,6 +31,11 @@ ABase_Collectable::ABase_Collectable()
 void ABase_Collectable::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	Collider->OnComponentBeginOverlap.AddDynamic(this, &ABase_Collectable::OnOverlapBegin); 
+
+	// this defines what type of collectible is getting spawned
+	
 
 
 }
@@ -95,5 +94,7 @@ void ABase_Collectable::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAct
 			break;
 		}
 	}
+
+	Destroy(); 
 }
 

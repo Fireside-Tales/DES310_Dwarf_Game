@@ -9,7 +9,7 @@
 UENUM(BlueprintType)
 enum CollectibleType
 {
-	Health,
+	Health = 0,
 	MaxHealth,
 	SwingSpeed,
 	MoveSpeed,
@@ -20,8 +20,6 @@ UCLASS()
 class DWARF_GAME_DES310_API ABase_Collectable : public AActor
 {
 	GENERATED_BODY()
-private:
-	UStaticMesh* ModelLoader();
 
 public:
 	// Sets default values for this actor's properties
@@ -34,7 +32,7 @@ protected:
 	UFUNCTION()
 		void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-
+	
 	float mf_yawRotation;
 	float mf_yOffset;
 	bool mb_Bounce;
