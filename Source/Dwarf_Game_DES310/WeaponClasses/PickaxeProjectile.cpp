@@ -22,7 +22,7 @@ APickaxeProjectile::APickaxeProjectile()
 	m_AudioComponent->SetupAttachment(RootComponent);
 	m_AudioComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 
-	mf_AxeThrowSpeed = 2500.f;
+	mf_AxeThrowSpeed = 2000.f;
 	mf_MaxDistance = 30000.f;
 	mf_AxeReturnScale = 1.f;
 	mf_ReturnTilt = 60.f;
