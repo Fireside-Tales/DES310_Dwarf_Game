@@ -23,6 +23,10 @@ APickaxeProjectile::APickaxeProjectile()
 	m_AudioComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 
 	mf_AxeThrowSpeed = 2500.f;
+	mf_MaxDistance = 30000.f;
+	mf_AxeReturnScale = 1.f;
+	mf_ReturnTilt = 60.f;
+	mf_ReturnSpinRate = 0.35f;
 
 }
 
@@ -100,11 +104,14 @@ void APickaxeProjectile::AdjustAxeReturnLocation()
 	ZAdj = 1 - ZAdj;
 	ZAdj *= 30.f;
 	ZAdj += 20.f;
+
 	FVector Location = GetActorLocation();  // gets the actors current location
 
 	FVector Z = FVector(0, 0, ZAdj);  // creates the adjustment for the z axis
 
-	SetActorLocation(Location + Z); // sets the actors location based on the offset in the z axis
+	FVector finalLocation = UKismetMathLibrary::Add_VectorVector(Location, Z);
+
+	SetActorLocation(finalLocation); // sets the actors location based on the offset in the z axis
 }
 
 void APickaxeProjectile::AxeLodgePull(float pull)
@@ -130,12 +137,13 @@ void APickaxeProjectile::ReturnPosition(float rot1, float rot2, float vectorCurv
 
 	targetLoc += socketLocation; // adds the sockets location to the target location
 
-	mv_ReturnTargetLocations = FMath::Lerp(mv_InitLoc, targetLoc, speedCurve); // sets the return target to be the lerp between the initial target and the speed curve
+	mv_ReturnTargetLocations = UKismetMathLibrary::VLerp(mv_InitLoc, targetLoc, speedCurve); // sets the return target to be the lerp between the initial target and the speed curve
 
 	FRotator newRotation = FRotator(mr_CameraRot.Pitch, mr_CameraRot.Yaw, mr_CameraRot.Roll + mf_ReturnTilt); // gets the cameras rotation with a offset in the roll for the return tilt
 
-	FRotator lerpRot = FMath::Lerp(mr_InitRot, newRotation, rot1);
-	FRotator finalRotation = FMath::Lerp(lerpRot, socketRotation, rot2);
+	FRotator lerpRot = UKismetMathLibrary::RLerp(mr_InitRot, newRotation, rot1, true);
+	FRotator finalRotation = UKismetMathLibrary::RLerp(lerpRot, socketRotation, rot2, true);
+
 
 	SetActorLocationAndRotation(mv_ReturnTargetLocations, finalRotation); // sets the actors location and final rotation 
 }
@@ -146,14 +154,16 @@ void APickaxeProjectile::ReturnSpin(float TimelineSpeed)
 	float timer;
 	duration = 1 / TimelineSpeed;
 
-	mi_ReturnSpins = FMath::RoundToInt(duration / mf_ReturnSpinRate); // this sets how many times the axe should spin on return
+	mi_ReturnSpins = UKismetMathLibrary::Round(duration / mf_ReturnSpinRate); // this sets how many times the axe should spin on return
 
 	//used for calculating the return length 
 	mf_SpinLength = duration - 0.055f;
-	mf_SpinLength /= mi_ReturnSpins;
+	mf_SpinLength /= UKismetMathLibrary::Conv_IntToFloat(mi_ReturnSpins);
 	mf_SpinLength = 1 / mf_SpinLength;
 
+	
 	timer = duration - 0.87f;
+	duration -= 0.87f;
 
 	FLatentActionInfo actionInfo;
 
@@ -169,7 +179,7 @@ void APickaxeProjectile::ReturnSpin(float TimelineSpeed)
 
 void APickaxeProjectile::ReturnSpinAfterTime(float newPitch)
 {
-	m_PivotPoint->SetRelativeRotation(FRotator(newPitch * 360, 0, 0));
+	m_PivotPoint->SetRelativeRotation(FRotator(newPitch * 360.0f, 0.0f, 0.0f));
 }
 
 float APickaxeProjectile::AdjustAxeImpactPitch()
@@ -195,7 +205,7 @@ float APickaxeProjectile::GetClampedAxeDistanceFromChar(USkeletalMeshComponent* 
 
 	FVector finalVector = GetActorLocation() - socketLoc; // gets the final vector from the hand socket and the actors current position 
 
-	return FMath::Clamp(finalVector.Length(), 0, mf_MaxDistance);
+	return UKismetMathLibrary::FClamp(finalVector.Length(), 0, mf_MaxDistance);
 }
 
 FVector APickaxeProjectile::CalculateImpulseDirection()
@@ -206,15 +216,16 @@ FVector APickaxeProjectile::CalculateImpulseDirection()
 	return vel;
 }
 
-float APickaxeProjectile::AdjustAxeReturnTimelineSpeed(float OptimalDistance, float AxeReturnSpeed)
+float APickaxeProjectile::AdjustAxeReturnTimelineSpeed()
 {
 	float finalValue;
 
-	finalValue = OptimalDistance * AxeReturnSpeed;
+	finalValue = mf_OptimalDis * mf_AxeReturnSpeed;
 
-	finalValue /= mf_DistanceFromChar;
+	if (mf_DistanceFromChar > 0)
+		finalValue /= mf_DistanceFromChar;
 
-	return FMath::Clamp(finalValue, 0.4f, 7.0f);
+	return UKismetMathLibrary::FClamp(finalValue, 0.4f, 7.0f);
 }
 
 void APickaxeProjectile::InitVariables(UProjectileMovementComponent* projectileMovement, USceneComponent* pivotPoint, USceneComponent* lodgePoint, UCameraComponent* camera)

@@ -54,7 +54,9 @@ public:
 	FVector mv_ImpactNormal;
 	FVector mv_ThrowDir;
 	FVector mv_CameraLoc;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector mv_AxeLocationLastTick;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector mv_ReturnTargetLocations;
 
 
@@ -68,10 +70,10 @@ public:
 	float mf_MaxDistance;
 	float mf_DistanceFromChar;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float mf_OptimalDis;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float mf_AxeReturnSpeed;
 
 	float mf_AxeReturnScale;
@@ -148,8 +150,10 @@ protected:
 	UFUNCTION(BlueprintCallable)
 		void SnapToStart();
 
+
+
 	UFUNCTION(BlueprintCallable)
-		float AdjustAxeReturnTimelineSpeed(float OptimalDistance, float AxeReturnSpeed);
+		float AdjustAxeReturnTimelineSpeed();
 
 	UFUNCTION(BlueprintCallable)
 		void InitVariables(UProjectileMovementComponent* projectileMovement, USceneComponent* pivotPoint, USceneComponent* lodgePoint, UCameraComponent* camera);
