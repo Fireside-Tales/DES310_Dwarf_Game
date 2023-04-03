@@ -41,6 +41,7 @@ void ABase_Player::BeginPlay()
 	m_PlayerStats.mf_Strength = m_PlayerStats.mf_BaseStrength;
 	m_PlayerStats.mf_Movespeed = m_PlayerStats.mf_BaseMovespeed;
 	m_PlayerStats.mf_SwingSpeed = m_PlayerStats.mf_SwingSpeed;
+	m_PlayerStats.mf_Stamina = m_PlayerStats.mf_MaxStamina; 
 }
 
 // Called every frame
@@ -48,7 +49,9 @@ void ABase_Player::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (m_PlayerStats.mf_Health <= 0) 
+
+
+	if (m_PlayerStats.mf_Health <= 0)
 	{
 		m_PlayerStats.isAlive = false;
 	}
@@ -74,6 +77,8 @@ void ABase_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	InputComponent->BindAction("StealHeirloom", IE_Pressed, this, &ABase_Player::StealHeirloom);
+	InputComponent->BindAction("PlayerDash", IE_Pressed, this, &ABase_Player::ToggleDash); 
+	InputComponent->BindAction("PlayerDash", IE_Released, this, &ABase_Player::ToggleDash); 
 }
 
 void ABase_Player::Aim()
@@ -101,7 +106,7 @@ void ABase_Player::ReleaseAim()
 	mb_UseContRotation = false;
 	mf_GamepadTurnRate = 1.5;
 	mf_CameraTurnRate = 50.f;
-	GetCharacterMovement()->MaxWalkSpeed = 500.0f;
+	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
 
 }
 
@@ -180,6 +185,53 @@ void ABase_Player::HandlePlayerStates()
 	}
 }
 
+
+/// <summary>
+///				This function basically clmaps all the players stats in the game.
+/// 
+///				This ensures that the player stats don't go lower or higher than is expected
+/// </summary>
+/// 
+void ABase_Player::HandlePlayerStats()
+{
+	// health
+	if (m_PlayerStats.mf_Health > m_PlayerStats.mf_MaxHealth)
+	{
+		m_PlayerStats.mf_Health = m_PlayerStats.mf_MaxHealth;
+	}
+	if (m_PlayerStats.mf_Health < 0) 
+	{
+		m_PlayerStats.mf_Health = 0; 
+		m_PlayerStats.isAlive = false; 
+	}
+	// stamina
+	if (m_PlayerStats.mf_Stamina > m_PlayerStats.mf_MaxStamina)
+	{
+		m_PlayerStats.mf_Stamina = m_PlayerStats.mf_MaxStamina;
+	}
+	if (m_PlayerStats.mf_Stamina < 0) 
+	{
+		m_PlayerStats.mf_Stamina = 0; 
+		mb_isDashing = false; 
+	}
+
+	// move speed
+	if (m_PlayerStats.mf_Movespeed < m_PlayerStats.mf_BaseMovespeed)
+	{
+		m_PlayerStats.mf_Movespeed = m_PlayerStats.mf_BaseMovespeed; 
+	}
+	// strength
+	if (m_PlayerStats.mf_Strength < m_PlayerStats.mf_BaseStrength) 
+	{
+		m_PlayerStats.mf_Strength = m_PlayerStats.mf_BaseStrength; 
+	}
+	// swing speed
+	if (m_PlayerStats.mf_SwingSpeed <  m_PlayerStats.mf_BaseSwingSpeed) 
+	{
+		m_PlayerStats.mf_SwingSpeed = m_PlayerStats.mf_BaseSwingSpeed; 
+	}
+}
+
 void ABase_Player::InitialiseCamera()
 {
 	mv_CameraVec = FVector(0, 20, 40); // starting location for the camera
@@ -190,6 +242,45 @@ void ABase_Player::InitialiseCamera()
 
 	SpringArmcomp->SocketOffset = mv_CameraVec;
 	SpringArmcomp->TargetArmLength = mf_SpringIdleLength;
+}
+
+void ABase_Player::ToggleDash()
+{
+	if (!mb_isDashing) 
+	{
+		if (m_PlayerStats.mf_Stamina > 0 && mb_Aiming == false) 
+		{
+			mb_isDashing = true;
+		}
+	}
+	else 
+	{
+		mb_isDashing = false; 
+	}
+}
+
+void ABase_Player::PlayerDash(float delta)
+{
+	if (mb_isDashing) 
+	{
+		m_PlayerStats.mf_Stamina -= (delta/2);
+
+		GetCharacterMovement()->MaxWalkSpeed = 1000.f;
+		GEngine->AddOnScreenDebugMessage(-1, .01f, FColor::Yellow, TEXT("DASH"));
+		mf_StaminaRegen = 0.f;
+	}
+	else 
+	{
+		mf_StaminaRegen += delta; 
+		if (mf_StaminaRegen >= mf_StaminaTarget && m_PlayerStats.mf_Stamina < m_PlayerStats.mf_MaxStamina) 
+		{
+			m_PlayerStats.mf_Stamina += delta; 
+		}
+		if (mb_Aiming == false) 
+		{
+			GetCharacterMovement()->MaxWalkSpeed = 600.f; 
+		}
+	}
 }
 
 void ABase_Player::StealHeirloom()

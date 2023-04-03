@@ -279,6 +279,9 @@ bool APickaxeProjectile::InitSphereTrace(FHitResult& OutHit)
 
 	TArray<AActor*> ignoreActors;
 
+	ignoreActors.Add(this); 
+	ignoreActors.Add(playerRef); 
+
 	return UKismetSystemLibrary::SphereTraceSingle(GetWorld(), start, end, 25.0f, ETraceTypeQuery::TraceTypeQuery1, false, ignoreActors, EDrawDebugTrace::None, OutHit, true);
 }
 
