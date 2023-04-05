@@ -78,6 +78,8 @@ void ABase_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 	InputComponent->BindAction("StealHeirloom", IE_Pressed, this, &ABase_Player::StealHeirloom);
 	InputComponent->BindAction("Throw", IE_Pressed, this, &ABase_Player::ThrowInput);
+	InputComponent->BindAction("Light Attack", IE_Pressed, this, &ABase_Player::LightAttackInput);
+	InputComponent->BindAction("Heavy Attack", IE_Pressed, this, &ABase_Player::HeavyAttackInput);
 
 
 	InputComponent->BindAction("PlayerDash", IE_Pressed, this, &ABase_Player::ToggleDash);
