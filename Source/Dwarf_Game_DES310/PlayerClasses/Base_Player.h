@@ -51,6 +51,18 @@ enum PlayerStates
 	Respawning
 };
 
+UENUM(BlueprintType)
+enum PlayerAttacks
+{
+	None,
+	Light1,
+	Light2,
+	Light3,
+	Heavy1,
+	Heavy2,
+	Heavy3
+};
+
 UCLASS()
 class DWARF_GAME_DES310_API ABase_Player : public ACharacter
 {
