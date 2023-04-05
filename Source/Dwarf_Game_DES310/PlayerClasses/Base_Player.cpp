@@ -41,7 +41,7 @@ void ABase_Player::BeginPlay()
 	m_PlayerStats.mf_Strength = m_PlayerStats.mf_BaseStrength;
 	m_PlayerStats.mf_Movespeed = m_PlayerStats.mf_BaseMovespeed;
 	m_PlayerStats.mf_SwingSpeed = m_PlayerStats.mf_SwingSpeed;
-	m_PlayerStats.mf_Stamina = m_PlayerStats.mf_MaxStamina; 
+	m_PlayerStats.mf_Stamina = m_PlayerStats.mf_MaxStamina;
 }
 
 // Called every frame
@@ -77,9 +77,57 @@ void ABase_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	InputComponent->BindAction("StealHeirloom", IE_Pressed, this, &ABase_Player::StealHeirloom);
-	InputComponent->BindAction("PlayerDash", IE_Pressed, this, &ABase_Player::ToggleDash); 
-	InputComponent->BindAction("PlayerDash", IE_Released, this, &ABase_Player::ToggleDash); 
+	InputComponent->BindAction("Throw", IE_Pressed, this, &ABase_Player::ThrowInput);
+
+
+	InputComponent->BindAction("PlayerDash", IE_Pressed, this, &ABase_Player::ToggleDash);
+	InputComponent->BindAction("PlayerDash", IE_Released, this, &ABase_Player::ToggleDash);
 }
+
+void ABase_Player::ThrowInput()
+{
+	if (mb_Aiming)  // checks that the player is aiming
+	{
+		if (IsValid(m_AxeRef)) // checks if the axe is set
+		{
+			if (m_AxeRef->mb_Thrown == false)  // checks if it has been thrown yet
+			{
+				m_PlayerStates = PlayerStates::Throwing; // sets the player state to throwing
+			}
+		}
+	}
+}
+
+void ABase_Player::LightAttackInput()
+{
+	if (m_AxeRef->mb_Thrown == false && mb_Aiming == false) // checks if the axe has not been thrown and the player isn't aiming
+	{
+		if (m_PlayerStates != PlayerStates::Attacking) 
+		{
+			if (m_PlayerStates != PlayerStates::Throwing) 
+			{
+				m_PlayerStates = PlayerStates::Attacking; 
+				m_NextAttack.Enqueue(PlayerAttacks::Light1); 
+			}
+		}
+		else 
+		{
+			if (m_CurrentAttack == PlayerAttacks::Light1) 
+			{
+				
+			}
+		}
+	}
+}
+void ABase_Player::HeavyAttackInput()
+{
+
+}
+void ABase_Player::HandleAttacks()
+{
+
+}
+
 
 void ABase_Player::Aim()
 {
@@ -199,36 +247,36 @@ void ABase_Player::HandlePlayerStats()
 	{
 		m_PlayerStats.mf_Health = m_PlayerStats.mf_MaxHealth;
 	}
-	if (m_PlayerStats.mf_Health < 0) 
+	if (m_PlayerStats.mf_Health < 0)
 	{
-		m_PlayerStats.mf_Health = 0; 
-		m_PlayerStats.isAlive = false; 
+		m_PlayerStats.mf_Health = 0;
+		m_PlayerStats.isAlive = false;
 	}
 	// stamina
 	if (m_PlayerStats.mf_Stamina > m_PlayerStats.mf_MaxStamina)
 	{
 		m_PlayerStats.mf_Stamina = m_PlayerStats.mf_MaxStamina;
 	}
-	if (m_PlayerStats.mf_Stamina < 0) 
+	if (m_PlayerStats.mf_Stamina < 0)
 	{
-		m_PlayerStats.mf_Stamina = 0; 
-		mb_isDashing = false; 
+		m_PlayerStats.mf_Stamina = 0;
+		mb_isDashing = false;
 	}
 
 	// move speed
 	if (m_PlayerStats.mf_Movespeed < m_PlayerStats.mf_BaseMovespeed)
 	{
-		m_PlayerStats.mf_Movespeed = m_PlayerStats.mf_BaseMovespeed; 
+		m_PlayerStats.mf_Movespeed = m_PlayerStats.mf_BaseMovespeed;
 	}
 	// strength
-	if (m_PlayerStats.mf_Strength < m_PlayerStats.mf_BaseStrength) 
+	if (m_PlayerStats.mf_Strength < m_PlayerStats.mf_BaseStrength)
 	{
-		m_PlayerStats.mf_Strength = m_PlayerStats.mf_BaseStrength; 
+		m_PlayerStats.mf_Strength = m_PlayerStats.mf_BaseStrength;
 	}
 	// swing speed
-	if (m_PlayerStats.mf_SwingSpeed <  m_PlayerStats.mf_BaseSwingSpeed) 
+	if (m_PlayerStats.mf_SwingSpeed < m_PlayerStats.mf_BaseSwingSpeed)
 	{
-		m_PlayerStats.mf_SwingSpeed = m_PlayerStats.mf_BaseSwingSpeed; 
+		m_PlayerStats.mf_SwingSpeed = m_PlayerStats.mf_BaseSwingSpeed;
 	}
 }
 
@@ -246,39 +294,39 @@ void ABase_Player::InitialiseCamera()
 
 void ABase_Player::ToggleDash()
 {
-	if (!mb_isDashing) 
+	if (!mb_isDashing)
 	{
-		if (m_PlayerStats.mf_Stamina > 0 && mb_Aiming == false) 
+		if (m_PlayerStats.mf_Stamina > 0 && mb_Aiming == false)
 		{
 			mb_isDashing = true;
 		}
 	}
-	else 
+	else
 	{
-		mb_isDashing = false; 
+		mb_isDashing = false;
 	}
 }
 
 void ABase_Player::PlayerDash(float delta)
 {
-	if (mb_isDashing) 
+	if (mb_isDashing)
 	{
-		m_PlayerStats.mf_Stamina -= (delta/2);
+		m_PlayerStats.mf_Stamina -= (delta / 2);
 
 		GetCharacterMovement()->MaxWalkSpeed = 1000.f;
 		GEngine->AddOnScreenDebugMessage(-1, .01f, FColor::Yellow, TEXT("DASH"));
 		mf_StaminaRegen = 0.f;
 	}
-	else 
+	else
 	{
-		mf_StaminaRegen += delta; 
-		if (mf_StaminaRegen >= mf_StaminaTarget && m_PlayerStats.mf_Stamina < m_PlayerStats.mf_MaxStamina) 
+		mf_StaminaRegen += delta;
+		if (mf_StaminaRegen >= mf_StaminaTarget && m_PlayerStats.mf_Stamina < m_PlayerStats.mf_MaxStamina)
 		{
-			m_PlayerStats.mf_Stamina += delta; 
+			m_PlayerStats.mf_Stamina += delta;
 		}
-		if (mb_Aiming == false) 
+		if (mb_Aiming == false)
 		{
-			GetCharacterMovement()->MaxWalkSpeed = 600.f; 
+			GetCharacterMovement()->MaxWalkSpeed = 600.f;
 		}
 	}
 }
