@@ -82,6 +82,9 @@ void ABase_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 	InputComponent->BindAction("PlayerDash", IE_Pressed, this, &ABase_Player::ToggleDash);
 	InputComponent->BindAction("PlayerDash", IE_Released, this, &ABase_Player::ToggleDash);
+
+	InputComponent->BindAction("Emote", IE_Pressed, this, &ABase_Player::EmoteOnPlayer);
+
 }
 
 void ABase_Player::ThrowInput()
@@ -271,6 +274,8 @@ void ABase_Player::HandlePlayerStates()
 				break;
 			case PlayerStates::Attacking:
 
+				break;
+			case PlayerStates::Emote:
 				break;
 			default:
 				if (GetCharacterMovement()->Velocity.Length() == 0)

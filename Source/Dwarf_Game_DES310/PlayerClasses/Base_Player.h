@@ -48,7 +48,8 @@ enum PlayerStates
 	Aiming,
 	Catching,
 	Dead,
-	Respawning
+	Respawning, 
+	Emote
 };
 
 UENUM(BlueprintType)
@@ -132,6 +133,11 @@ protected:
 	void ThrowInput();
 	void LightAttackInput();
 	void HeavyAttackInput();
+
+	void EmoteOnPlayer() 
+	{
+		m_PlayerStates = PlayerStates::Emote;
+	}
 
 	void HandleAttacks();
 
