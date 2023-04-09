@@ -88,7 +88,7 @@ protected:
 		bool mb_Aiming;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Axe Throw")
-		class APickaxeProjectile* m_AxeRef; 
+		class APickaxeProjectile* m_AxeRef;
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
@@ -131,7 +131,7 @@ protected:
 
 	void ThrowInput();
 	void LightAttackInput();
-	void HeavyAttackInput(); 
+	void HeavyAttackInput();
 
 	void HandleAttacks();
 
@@ -164,10 +164,10 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Playerstates)
 		TEnumAsByte <PlayerStates> m_PlayerStates;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Playerstates)
-		TEnumAsByte <PlayerAttacks> m_CurrentAttack;
+		TEnumAsByte<PlayerAttacks> m_CurrentAttack;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Playerstates)
-		bool mb_QueueAttack; 
-	TQueue<PlayerAttacks> m_NextAttack; 
+		bool mb_AttackFinished;
+	TQueue<TEnumAsByte<PlayerAttacks>> m_NextAttack;
 
 
 	UFUNCTION(BlueprintCallable, Category = "Player Skeleton")

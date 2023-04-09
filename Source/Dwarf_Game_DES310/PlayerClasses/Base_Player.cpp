@@ -6,6 +6,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Dwarf_Game_DES310/WeaponClasses/PickaxeProjectile.h"
+#include "Containers/Queue.h"
 
 // Sets default values
 ABase_Player::ABase_Player()
@@ -29,7 +30,7 @@ ABase_Player::ABase_Player()
 	m_PlayerHeirloomPivot->SetupAttachment(this->GetMesh());//Pivot point attaching to the mesh
 
 	InitialiseCamera(); // this sets up the camera for getting used for the aiming
-
+	mb_AttackFinished = true;
 }
 
 // Called when the game starts or when spawned
@@ -49,12 +50,9 @@ void ABase_Player::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-
-
-	if (m_PlayerStats.mf_Health <= 0)
-	{
-		m_PlayerStats.isAlive = false;
-	}
+	HandlePlayerStats(); // handles the clamping of the players stats
+	HandleAttacks(); // Handles the queue for the players attacks
+	HandlePlayerStates(); // handles all the players states
 
 	if (mb_Aiming)
 	{
@@ -104,30 +102,89 @@ void ABase_Player::LightAttackInput()
 {
 	if (m_AxeRef->mb_Thrown == false && mb_Aiming == false) // checks if the axe has not been thrown and the player isn't aiming
 	{
-		if (m_PlayerStates != PlayerStates::Attacking) 
+		if (m_PlayerStates != PlayerStates::Attacking)
 		{
-			if (m_PlayerStates != PlayerStates::Throwing) 
+			if (m_PlayerStates != PlayerStates::Throwing)
 			{
-				m_PlayerStates = PlayerStates::Attacking; 
-				m_NextAttack.Enqueue(PlayerAttacks::Light1); 
+				m_PlayerStates = PlayerStates::Attacking;
+				m_NextAttack.Enqueue(PlayerAttacks::Light1);
+				mb_AttackFinished = true;
 			}
 		}
-		else 
+		else
 		{
-			if (m_CurrentAttack == PlayerAttacks::Light1) 
+			if (m_NextAttack.IsEmpty())
 			{
-				
+				switch (m_CurrentAttack)
+				{
+				case PlayerAttacks::Light1:
+					m_NextAttack.Enqueue(PlayerAttacks::Light2);
+					break;
+				case PlayerAttacks::Light2:
+					m_NextAttack.Enqueue(PlayerAttacks::Light3);
+					break;
+				case PlayerAttacks::Light3:
+					m_NextAttack.Enqueue(PlayerAttacks::Light1);
+					break;
+				}
 			}
 		}
 	}
 }
 void ABase_Player::HeavyAttackInput()
 {
-
+	if (m_AxeRef->mb_Thrown == false && mb_Aiming == false)
+	{
+		if (m_PlayerStates != PlayerStates::Attacking)
+		{
+			if (m_PlayerStates != PlayerStates::Throwing)
+			{
+				m_PlayerStates = PlayerStates::Attacking;
+				m_NextAttack.Enqueue(PlayerAttacks::Heavy1);
+				mb_AttackFinished = true;
+			}
+		}
+		else
+		{
+			if (m_NextAttack.IsEmpty())
+			{
+				switch (m_CurrentAttack)
+				{
+				case PlayerAttacks::Heavy1:
+					m_NextAttack.Enqueue(PlayerAttacks::Heavy2);
+					break;
+				case PlayerAttacks::Heavy2:
+					m_NextAttack.Enqueue(PlayerAttacks::Heavy3);
+					break;
+				case PlayerAttacks::Heavy3:
+					m_NextAttack.Enqueue(PlayerAttacks::Heavy1);
+					break;
+				}
+			}
+		}
+	}
 }
 void ABase_Player::HandleAttacks()
 {
+	if (mb_AttackFinished)
+	{
+		if (m_NextAttack.IsEmpty() == false)
+		{
+			m_NextAttack.Dequeue(m_CurrentAttack);
+			mb_AttackFinished = false;
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("DEqueued")));
 
+
+		}
+		else
+		{
+			m_CurrentAttack = PlayerAttacks::None;
+			m_PlayerStates = PlayerStates::Idle;
+			mb_AttackFinished = false;
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("FINISHED ATTACK")));
+
+		}
+	}
 }
 
 
