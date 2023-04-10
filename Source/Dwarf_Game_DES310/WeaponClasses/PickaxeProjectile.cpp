@@ -40,6 +40,7 @@ void APickaxeProjectile::BeginPlay()
 		PickMovement->ProjectileGravityScale = 0;
 		PickMovement->SetVelocityInLocalSpace(FVector());
 	}
+	
 }
 
 // Called every frame
@@ -161,7 +162,7 @@ void APickaxeProjectile::ReturnSpin(float TimelineSpeed)
 	mf_SpinLength /= UKismetMathLibrary::Conv_IntToFloat(mi_ReturnSpins);
 	mf_SpinLength = 1 / mf_SpinLength;
 
-	
+
 	timer = duration - 0.87f;
 	duration -= 0.87f;
 
@@ -236,6 +237,64 @@ void APickaxeProjectile::InitVariables(UProjectileMovementComponent* projectileM
 
 }
 
+void APickaxeProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	ABase_Player* otherPlayer = Cast<ABase_Player>(OtherActor);
+	if (IsValid(otherPlayer))
+	{
+		if (otherPlayer != playerRef)
+		{
+			if (mb_Thrown == false)
+			{
+				float damage;
+				switch (playerRef->m_CurrentAttack)
+				{
+				case PlayerAttacks::Light1:
+				case PlayerAttacks::Light2:
+				case PlayerAttacks::Light3:
+					damage = UKismetMathLibrary::RandomIntegerInRange(playerRef->m_PlayerStats.mf_Strength * 0.5f, playerRef->m_PlayerStats.mf_Strength * 1.5f);
+					break;
+
+				case PlayerAttacks::Heavy1:
+				case PlayerAttacks::Heavy2:
+				case PlayerAttacks::Heavy3:
+					damage = UKismetMathLibrary::RandomIntegerInRange(playerRef->m_PlayerStats.mf_Strength * 1.5f, playerRef->m_PlayerStats.mf_Strength * 2.5f);
+					break;
+				default:
+					damage = 0; // it should never hit here
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("NO DAMAGE"));
+					break;
+				}
+				if (UKismetMathLibrary::RandomIntegerInRange(0, 100) < 10)
+				{
+					damage *= 1.5;
+				}
+				otherPlayer->m_PlayerStats.mf_Health -= damage;
+			}
+			else
+			{
+				float damage = 0;
+				if (abs(GetActorLocation().Length() - playerRef->GetActorLocation().Length()) < 1500)
+				{
+					damage = 15;
+				}
+				else
+				{
+					damage = 15.f / (1500 * abs(GetActorLocation().Length() - playerRef->GetActorLocation().Length()));
+				}
+				if (UKismetMathLibrary::RandomIntegerInRange(0, 100) < 10)
+				{
+					damage *= 1.5;
+				}
+				otherPlayer->m_PlayerStats.mf_Health -= damage;
+
+
+			}
+		}
+	}
+
+}
+
 
 void APickaxeProjectile::InitialiseReturnVariables()
 {
@@ -279,8 +338,8 @@ bool APickaxeProjectile::InitSphereTrace(FHitResult& OutHit)
 
 	TArray<AActor*> ignoreActors;
 
-	ignoreActors.Add(this); 
-	ignoreActors.Add(playerRef); 
+	ignoreActors.Add(this);
+	ignoreActors.Add(playerRef);
 
 	return UKismetSystemLibrary::SphereTraceSingle(GetWorld(), start, end, 25.0f, ETraceTypeQuery::TraceTypeQuery1, false, ignoreActors, EDrawDebugTrace::None, OutHit, true);
 }
@@ -350,3 +409,5 @@ void APickaxeProjectile::LodgeAxe()
 	AxeState = AxeStates::Lodged;
 
 }
+
+

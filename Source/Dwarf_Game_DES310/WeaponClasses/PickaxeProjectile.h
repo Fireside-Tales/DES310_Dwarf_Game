@@ -55,9 +55,9 @@ public:
 	FVector mv_ThrowDir;
 	FVector mv_CameraLoc;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FVector mv_AxeLocationLastTick;
+		FVector mv_AxeLocationLastTick;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FVector mv_ReturnTargetLocations;
+		FVector mv_ReturnTargetLocations;
 
 
 	FRotator mr_InitRot;
@@ -157,4 +157,8 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 		void InitVariables(UProjectileMovementComponent* projectileMovement, USceneComponent* pivotPoint, USceneComponent* lodgePoint, UCameraComponent* camera);
+
+	UFUNCTION(BlueprintCallable)
+		void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 };
