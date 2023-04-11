@@ -83,7 +83,10 @@ void ABase_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	InputComponent->BindAction("PlayerDash", IE_Pressed, this, &ABase_Player::ToggleDash);
 	InputComponent->BindAction("PlayerDash", IE_Released, this, &ABase_Player::ToggleDash);
 
-	InputComponent->BindAction("Emote", IE_Pressed, this, &ABase_Player::EmoteOnPlayer);
+	InputComponent->BindAction("Emote1", IE_Pressed, this, &ABase_Player::FirstEmote);
+	InputComponent->BindAction("Emote2", IE_Pressed, this, &ABase_Player::SecondEmote);
+	InputComponent->BindAction("Emote3", IE_Pressed, this, &ABase_Player::ThirdEmote);
+	InputComponent->BindAction("Emote4", IE_Pressed, this, &ABase_Player::ForthEmote);
 
 }
 
@@ -264,35 +267,41 @@ void ABase_Player::LerpCamera(float alpha)
 
 void ABase_Player::HandlePlayerStates()
 {
-	if (m_PlayerStats.isAlive)
+	if (m_PlayerStats.isAlive) // checks if the player is alive 
 	{
-		if (mb_Aiming == false)
+		if (mb_Aiming == false) // checks they are not aiming
 		{
-			switch (m_PlayerStates)
+			switch (m_PlayerStates) // goes through all the possible states
 			{
+				// does nothing based on these three states
 			case PlayerStates::Throwing:
-				break;
 			case PlayerStates::Attacking:
-
-				break;
 			case PlayerStates::Emote:
 				break;
-			default:
-				if (GetCharacterMovement()->Velocity.Length() == 0)
+
+			default: // on everyother state it will do this
+				if (GetCharacterMovement()->Velocity.Length() == 0) // checks if the velocity is 0
 				{
-					m_PlayerStates = PlayerStates::Idle;
+					m_PlayerStates = PlayerStates::Idle; // makes the player state idle
 				}
 				else
 				{
-					m_PlayerStates = PlayerStates::Moving;
+					m_PlayerStates = PlayerStates::Moving; // otherwise it is idle
 				}
 				break;
+			}
+		}
+		else  
+		{
+			if (m_PlayerStates != Attacking && m_PlayerStates != Throwing)  // checks that the player isn't attacking or throwing
+			{
+				m_PlayerStates = Aiming;  // sets the player state to aiming
 			}
 		}
 	}
 	else
 	{
-		m_PlayerStates = PlayerStates::Dead;
+		m_PlayerStates = PlayerStates::Dead; // sets the player state to dead
 		GEngine->AddOnScreenDebugMessage(-1, 0.1f, FColor::Blue, FString::Printf(TEXT("DEAD")));
 	}
 }

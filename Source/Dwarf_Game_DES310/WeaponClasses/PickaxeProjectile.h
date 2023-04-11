@@ -65,7 +65,7 @@ public:
 	FRotator mr_LodgePointRot;
 
 	float mf_AxeThrowSpeed;
-	float mf_ThrowTraceDis = 60;
+	float mf_ThrowTraceDis = 1;
 	float mf_Z_Adjustment;
 	float mf_MaxDistance;
 	float mf_DistanceFromChar;

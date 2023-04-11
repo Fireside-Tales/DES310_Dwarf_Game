@@ -320,13 +320,15 @@ bool APickaxeProjectile::LineTraceMethod(FHitResult& OutHit)
 	FVector start = GetActorLocation();
 	FVector end = GetVelocity();
 
-	end.Normalize(0.0001f);
+	end.Normalize(0.000001f);
 	end *= mf_ThrowTraceDis;
 	end = GetActorLocation() + end;
 
 	FCollisionQueryParams parameters;
 
-
+	parameters.AddIgnoredActor(this);
+	parameters.AddIgnoredActor(playerRef);
+	
 
 	return GetWorld()->LineTraceSingleByChannel(OutHit, start, end, ECC_Visibility, parameters);
 }
@@ -340,8 +342,9 @@ bool APickaxeProjectile::InitSphereTrace(FHitResult& OutHit)
 
 	ignoreActors.Add(this);
 	ignoreActors.Add(playerRef);
+	
 
-	return UKismetSystemLibrary::SphereTraceSingle(GetWorld(), start, end, 25.0f, ETraceTypeQuery::TraceTypeQuery1, false, ignoreActors, EDrawDebugTrace::None, OutHit, true);
+	return UKismetSystemLibrary::SphereTraceSingle(GetWorld(), start, end, 5.0f, ETraceTypeQuery::TraceTypeQuery1, false, ignoreActors, EDrawDebugTrace::None, OutHit, true);
 }
 
 void APickaxeProjectile::ThrowAxe()

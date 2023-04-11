@@ -48,7 +48,7 @@ enum PlayerStates
 	Aiming,
 	Catching,
 	Dead,
-	Respawning, 
+	Respawning,
 	Emote
 };
 
@@ -62,6 +62,14 @@ enum PlayerAttacks
 	Heavy1,
 	Heavy2,
 	Heavy3
+};
+UENUM(BlueprintType)
+enum PlayerEmotes
+{
+	Emote1,
+	Emote2,
+	Emote3,
+	Emote4
 };
 
 UCLASS()
@@ -134,9 +142,25 @@ protected:
 	void LightAttackInput();
 	void HeavyAttackInput();
 
-	void EmoteOnPlayer() 
+	void FirstEmote()
 	{
 		m_PlayerStates = PlayerStates::Emote;
+		m_PlayerEmotes = PlayerEmotes::Emote1;
+	}
+	void SecondEmote()
+	{
+		m_PlayerStates = PlayerStates::Emote;
+		m_PlayerEmotes = PlayerEmotes::Emote2;
+	}
+	void ThirdEmote()
+	{
+		m_PlayerStates = PlayerStates::Emote;
+		m_PlayerEmotes = PlayerEmotes::Emote3;
+	}
+	void ForthEmote()
+	{
+		m_PlayerStates = PlayerStates::Emote;
+		m_PlayerEmotes = PlayerEmotes::Emote4;
 	}
 
 	void HandleAttacks();
@@ -173,6 +197,9 @@ public:
 		TEnumAsByte<PlayerAttacks> m_CurrentAttack;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Playerstates)
 		bool mb_AttackFinished;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Playerstates)
+		TEnumAsByte <PlayerEmotes> m_PlayerEmotes;
+
 	TQueue<TEnumAsByte<PlayerAttacks>> m_NextAttack;
 
 
