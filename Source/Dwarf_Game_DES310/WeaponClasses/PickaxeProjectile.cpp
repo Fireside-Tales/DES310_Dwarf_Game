@@ -274,13 +274,15 @@ void APickaxeProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAc
 			else
 			{
 				float damage = 0;
-				if (abs(GetActorLocation().Length() - playerRef->GetActorLocation().Length()) < 1500)
+				if (abs(GetActorLocation().Length() - playerRef->GetActorLocation().Length()) < 500)
 				{
 					damage = 15;
 				}
 				else
 				{
-					damage = 15.f / (1500 * abs(GetActorLocation().Length() - playerRef->GetActorLocation().Length()));
+					damage = 15.f * (500 / abs(GetActorLocation().Length() - playerRef->GetActorLocation().Length()));
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("DAMAGE: %f"),damage));
+
 				}
 				if (UKismetMathLibrary::RandomIntegerInRange(0, 100) < 10)
 				{

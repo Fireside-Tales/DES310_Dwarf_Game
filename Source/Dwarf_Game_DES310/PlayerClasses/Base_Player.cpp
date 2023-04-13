@@ -67,6 +67,15 @@ void ABase_Player::Tick(float DeltaTime)
 		GetCapsuleComponent()->SetWorldRotation(AimRotation);
 	}
 
+	if (m_PlayerStats.isAlive == false) 
+	{
+		if (IsValid(m_heirloom)) 
+		{
+			FDetachmentTransformRules* detach = new FDetachmentTransformRules(EDetachmentRule::KeepWorld, EDetachmentRule::KeepWorld, EDetachmentRule::KeepWorld,false); 
+			m_heirloom->DetachFromActor(*detach);
+		}
+	}
+
 }
 
 // Called to bind functionality to input
