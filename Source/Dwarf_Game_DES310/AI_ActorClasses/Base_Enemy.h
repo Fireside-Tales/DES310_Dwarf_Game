@@ -13,5 +13,14 @@ UCLASS()
 class DWARF_GAME_DES310_API ABase_Enemy : public AAI_Actor
 {
 	GENERATED_BODY()
+public:
+	ABase_Enemy();
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+
 	
+
 };

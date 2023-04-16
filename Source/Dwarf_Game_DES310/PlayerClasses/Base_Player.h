@@ -22,6 +22,8 @@ struct FPlayerStats
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
 		float mf_MaxHealth;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
+		float mf_MaxStamina;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
 		float mf_BaseMovespeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
 		float mf_BaseStrength;
@@ -32,6 +34,7 @@ struct FPlayerStats
 	float mf_Movespeed;
 	float mf_Strength;
 	float mf_SwingSpeed;
+	float mf_Stamina;
 
 };
 
@@ -45,7 +48,28 @@ enum PlayerStates
 	Aiming,
 	Catching,
 	Dead,
-	Respawning
+	Respawning,
+	Emote
+};
+
+UENUM(BlueprintType)
+enum PlayerAttacks
+{
+	None,
+	Light1,
+	Light2,
+	Light3,
+	Heavy1,
+	Heavy2,
+	Heavy3
+};
+UENUM(BlueprintType)
+enum PlayerEmotes
+{
+	Emote1,
+	Emote2,
+	Emote3,
+	Emote4
 };
 
 UCLASS()
@@ -72,7 +96,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Axe Throw")
 		bool mb_Aiming;
 
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Axe Throw")
+		class APickaxeProjectile* m_AxeRef;
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
@@ -86,6 +111,13 @@ protected:
 	float mf_GamepadTurnRate;
 	float mf_SpringIdleLength;
 	float mf_SpringAimLength;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		bool mb_isDashing;
+	float mf_StaminaRegen;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Timer")
+		float mf_StaminaTarget;
+
 
 
 
@@ -102,8 +134,43 @@ protected:
 
 	UFUNCTION(BlueprintCallable, Category = "Player States")
 		void HandlePlayerStates();
+	UFUNCTION(BlueprintCallable, Category = "Player Stats")
+		void HandlePlayerStats();
+
+
+	void ThrowInput();
+	void LightAttackInput();
+	void HeavyAttackInput();
+
+	void FirstEmote()
+	{
+		m_PlayerStates = PlayerStates::Emote;
+		m_PlayerEmotes = PlayerEmotes::Emote1;
+	}
+	void SecondEmote()
+	{
+		m_PlayerStates = PlayerStates::Emote;
+		m_PlayerEmotes = PlayerEmotes::Emote2;
+	}
+	void ThirdEmote()
+	{
+		m_PlayerStates = PlayerStates::Emote;
+		m_PlayerEmotes = PlayerEmotes::Emote3;
+	}
+	void ForthEmote()
+	{
+		m_PlayerStates = PlayerStates::Emote;
+		m_PlayerEmotes = PlayerEmotes::Emote4;
+	}
+
+	void HandleAttacks();
 
 	void InitialiseCamera();
+
+	void ToggleDash();
+
+	UFUNCTION(BlueprintCallable)
+		void PlayerDash(float delta);
 
 public:
 	// Called every frame
@@ -124,8 +191,17 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Playerstats)
 		FPlayerStats m_PlayerStats;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Playerstats)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Playerstates)
 		TEnumAsByte <PlayerStates> m_PlayerStates;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Playerstates)
+		TEnumAsByte<PlayerAttacks> m_CurrentAttack;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Playerstates)
+		bool mb_AttackFinished;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Playerstates)
+		TEnumAsByte <PlayerEmotes> m_PlayerEmotes;
+
+	TQueue<TEnumAsByte<PlayerAttacks>> m_NextAttack;
+
 
 	UFUNCTION(BlueprintCallable, Category = "Player Skeleton")
 		USkeletalMeshComponent* GetSkeleton()
@@ -152,5 +228,17 @@ public:
 	{
 		m_PlayerStats.mf_Health -= h;
 	}
+	UFUNCTION(BlueprintCallable)
+		float GetStaminaPercentage()
+	{
+		return m_PlayerStats.mf_Stamina / m_PlayerStats.mf_MaxStamina;
+	}
+	UFUNCTION(BlueprintCallable)
+		float GetHealthPercentage()
+	{
+		return m_PlayerStats.mf_Health / m_PlayerStats.mf_MaxHealth;
+	}
+
+
 
 };
