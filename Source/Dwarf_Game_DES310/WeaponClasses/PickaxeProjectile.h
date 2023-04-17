@@ -54,8 +54,10 @@ public:
 	FVector mv_ImpactNormal;
 	FVector mv_ThrowDir;
 	FVector mv_CameraLoc;
-	FVector mv_AxeLocationLastTick;
-	FVector mv_ReturnTargetLocations;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FVector mv_AxeLocationLastTick;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FVector mv_ReturnTargetLocations;
 
 
 	FRotator mr_InitRot;
@@ -63,15 +65,15 @@ public:
 	FRotator mr_LodgePointRot;
 
 	float mf_AxeThrowSpeed;
-	float mf_ThrowTraceDis = 60;
+	float mf_ThrowTraceDis = 1;
 	float mf_Z_Adjustment;
 	float mf_MaxDistance;
 	float mf_DistanceFromChar;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float mf_OptimalDis;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float mf_AxeReturnSpeed;
 
 	float mf_AxeReturnScale;
@@ -148,9 +150,15 @@ protected:
 	UFUNCTION(BlueprintCallable)
 		void SnapToStart();
 
+
+
 	UFUNCTION(BlueprintCallable)
-		float AdjustAxeReturnTimelineSpeed(float OptimalDistance, float AxeReturnSpeed);
+		float AdjustAxeReturnTimelineSpeed();
 
 	UFUNCTION(BlueprintCallable)
 		void InitVariables(UProjectileMovementComponent* projectileMovement, USceneComponent* pivotPoint, USceneComponent* lodgePoint, UCameraComponent* camera);
+
+	UFUNCTION(BlueprintCallable)
+		void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 };

@@ -22,7 +22,11 @@ APickaxeProjectile::APickaxeProjectile()
 	m_AudioComponent->SetupAttachment(RootComponent);
 	m_AudioComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 
-	mf_AxeThrowSpeed = 2500.f;
+	mf_AxeThrowSpeed = 2000.f;
+	mf_MaxDistance = 30000.f;
+	mf_AxeReturnScale = 1.f;
+	mf_ReturnTilt = 60.f;
+	mf_ReturnSpinRate = 0.35f;
 
 }
 
@@ -36,6 +40,7 @@ void APickaxeProjectile::BeginPlay()
 		PickMovement->ProjectileGravityScale = 0;
 		PickMovement->SetVelocityInLocalSpace(FVector());
 	}
+	
 }
 
 // Called every frame
@@ -100,11 +105,14 @@ void APickaxeProjectile::AdjustAxeReturnLocation()
 	ZAdj = 1 - ZAdj;
 	ZAdj *= 30.f;
 	ZAdj += 20.f;
+
 	FVector Location = GetActorLocation();  // gets the actors current location
 
 	FVector Z = FVector(0, 0, ZAdj);  // creates the adjustment for the z axis
 
-	SetActorLocation(Location + Z); // sets the actors location based on the offset in the z axis
+	FVector finalLocation = UKismetMathLibrary::Add_VectorVector(Location, Z);
+
+	SetActorLocation(finalLocation); // sets the actors location based on the offset in the z axis
 }
 
 void APickaxeProjectile::AxeLodgePull(float pull)
@@ -130,12 +138,13 @@ void APickaxeProjectile::ReturnPosition(float rot1, float rot2, float vectorCurv
 
 	targetLoc += socketLocation; // adds the sockets location to the target location
 
-	mv_ReturnTargetLocations = FMath::Lerp(mv_InitLoc, targetLoc, speedCurve); // sets the return target to be the lerp between the initial target and the speed curve
+	mv_ReturnTargetLocations = UKismetMathLibrary::VLerp(mv_InitLoc, targetLoc, speedCurve); // sets the return target to be the lerp between the initial target and the speed curve
 
 	FRotator newRotation = FRotator(mr_CameraRot.Pitch, mr_CameraRot.Yaw, mr_CameraRot.Roll + mf_ReturnTilt); // gets the cameras rotation with a offset in the roll for the return tilt
 
-	FRotator lerpRot = FMath::Lerp(mr_InitRot, newRotation, rot1);
-	FRotator finalRotation = FMath::Lerp(lerpRot, socketRotation, rot2);
+	FRotator lerpRot = UKismetMathLibrary::RLerp(mr_InitRot, newRotation, rot1, true);
+	FRotator finalRotation = UKismetMathLibrary::RLerp(lerpRot, socketRotation, rot2, true);
+
 
 	SetActorLocationAndRotation(mv_ReturnTargetLocations, finalRotation); // sets the actors location and final rotation 
 }
@@ -146,14 +155,16 @@ void APickaxeProjectile::ReturnSpin(float TimelineSpeed)
 	float timer;
 	duration = 1 / TimelineSpeed;
 
-	mi_ReturnSpins = FMath::RoundToInt(duration / mf_ReturnSpinRate); // this sets how many times the axe should spin on return
+	mi_ReturnSpins = UKismetMathLibrary::Round(duration / mf_ReturnSpinRate); // this sets how many times the axe should spin on return
 
 	//used for calculating the return length 
 	mf_SpinLength = duration - 0.055f;
-	mf_SpinLength /= mi_ReturnSpins;
+	mf_SpinLength /= UKismetMathLibrary::Conv_IntToFloat(mi_ReturnSpins);
 	mf_SpinLength = 1 / mf_SpinLength;
 
+
 	timer = duration - 0.87f;
+	duration -= 0.87f;
 
 	FLatentActionInfo actionInfo;
 
@@ -169,7 +180,7 @@ void APickaxeProjectile::ReturnSpin(float TimelineSpeed)
 
 void APickaxeProjectile::ReturnSpinAfterTime(float newPitch)
 {
-	m_PivotPoint->SetRelativeRotation(FRotator(newPitch * 360, 0, 0));
+	m_PivotPoint->SetRelativeRotation(FRotator(newPitch * 360.0f, 0.0f, 0.0f));
 }
 
 float APickaxeProjectile::AdjustAxeImpactPitch()
@@ -195,7 +206,7 @@ float APickaxeProjectile::GetClampedAxeDistanceFromChar(USkeletalMeshComponent* 
 
 	FVector finalVector = GetActorLocation() - socketLoc; // gets the final vector from the hand socket and the actors current position 
 
-	return FMath::Clamp(finalVector.Length(), 0, mf_MaxDistance);
+	return UKismetMathLibrary::FClamp(finalVector.Length(), 0, mf_MaxDistance);
 }
 
 FVector APickaxeProjectile::CalculateImpulseDirection()
@@ -206,15 +217,16 @@ FVector APickaxeProjectile::CalculateImpulseDirection()
 	return vel;
 }
 
-float APickaxeProjectile::AdjustAxeReturnTimelineSpeed(float OptimalDistance, float AxeReturnSpeed)
+float APickaxeProjectile::AdjustAxeReturnTimelineSpeed()
 {
 	float finalValue;
 
-	finalValue = OptimalDistance * AxeReturnSpeed;
+	finalValue = mf_OptimalDis * mf_AxeReturnSpeed;
 
-	finalValue /= mf_DistanceFromChar;
+	if (mf_DistanceFromChar > 0)
+		finalValue /= mf_DistanceFromChar;
 
-	return FMath::Clamp(finalValue, 0.4f, 7.0f);
+	return UKismetMathLibrary::FClamp(finalValue, 0.4f, 7.0f);
 }
 
 void APickaxeProjectile::InitVariables(UProjectileMovementComponent* projectileMovement, USceneComponent* pivotPoint, USceneComponent* lodgePoint, UCameraComponent* camera)
@@ -222,6 +234,66 @@ void APickaxeProjectile::InitVariables(UProjectileMovementComponent* projectileM
 	m_PivotPoint = pivotPoint;
 	m_LodgePoint = lodgePoint;
 	m_Camera = camera;
+
+}
+
+void APickaxeProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	ABase_Player* otherPlayer = Cast<ABase_Player>(OtherActor);
+	if (IsValid(otherPlayer))
+	{
+		if (otherPlayer != playerRef)
+		{
+			if (mb_Thrown == false)
+			{
+				float damage;
+				switch (playerRef->m_CurrentAttack)
+				{
+				case PlayerAttacks::Light1:
+				case PlayerAttacks::Light2:
+				case PlayerAttacks::Light3:
+					damage = UKismetMathLibrary::RandomIntegerInRange(playerRef->m_PlayerStats.mf_Strength * 0.5f, playerRef->m_PlayerStats.mf_Strength * 1.5f);
+					break;
+
+				case PlayerAttacks::Heavy1:
+				case PlayerAttacks::Heavy2:
+				case PlayerAttacks::Heavy3:
+					damage = UKismetMathLibrary::RandomIntegerInRange(playerRef->m_PlayerStats.mf_Strength * 1.5f, playerRef->m_PlayerStats.mf_Strength * 2.5f);
+					break;
+				default:
+					damage = 0; // it should never hit here
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("NO DAMAGE"));
+					break;
+				}
+				if (UKismetMathLibrary::RandomIntegerInRange(0, 100) < 10)
+				{
+					damage *= 1.5;
+				}
+				otherPlayer->m_PlayerStats.mf_Health -= damage;
+			}
+			else
+			{
+				float damage = 0;
+				if (abs(GetActorLocation().Length() - playerRef->GetActorLocation().Length()) < 500)
+				{
+					damage = 15;
+				}
+				else
+				{
+					damage = 15.f * (500 / abs(GetActorLocation().Length() - playerRef->GetActorLocation().Length()));
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("DAMAGE: %f"),damage));
+
+				}
+				if (UKismetMathLibrary::RandomIntegerInRange(0, 100) < 10)
+				{
+					damage *= 1.5;
+				}
+				otherPlayer->m_PlayerStats.mf_Health -= damage;
+
+
+			}
+		}
+	}
 
 }
 
@@ -250,13 +322,15 @@ bool APickaxeProjectile::LineTraceMethod(FHitResult& OutHit)
 	FVector start = GetActorLocation();
 	FVector end = GetVelocity();
 
-	end.Normalize(0.0001f);
+	end.Normalize(0.000001f);
 	end *= mf_ThrowTraceDis;
 	end = GetActorLocation() + end;
 
 	FCollisionQueryParams parameters;
 
-
+	parameters.AddIgnoredActor(this);
+	parameters.AddIgnoredActor(playerRef);
+	
 
 	return GetWorld()->LineTraceSingleByChannel(OutHit, start, end, ECC_Visibility, parameters);
 }
@@ -268,7 +342,11 @@ bool APickaxeProjectile::InitSphereTrace(FHitResult& OutHit)
 
 	TArray<AActor*> ignoreActors;
 
-	return UKismetSystemLibrary::SphereTraceSingle(GetWorld(), start, end, 25.0f, ETraceTypeQuery::TraceTypeQuery1, false, ignoreActors, EDrawDebugTrace::None, OutHit, true);
+	ignoreActors.Add(this);
+	ignoreActors.Add(playerRef);
+	
+
+	return UKismetSystemLibrary::SphereTraceSingle(GetWorld(), start, end, 5.0f, ETraceTypeQuery::TraceTypeQuery1, false, ignoreActors, EDrawDebugTrace::None, OutHit, true);
 }
 
 void APickaxeProjectile::ThrowAxe()
@@ -336,3 +414,5 @@ void APickaxeProjectile::LodgeAxe()
 	AxeState = AxeStates::Lodged;
 
 }
+
+
