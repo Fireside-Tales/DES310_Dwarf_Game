@@ -83,6 +83,8 @@ void ABase_Collectable::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAct
 			break;
 		case CollectibleType::MoveSpeed:
 			player->m_PlayerStats.mf_MaxStamina += mf_CollectValue;
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("INCREASE"));
+
 			break;
 		case CollectibleType::Strength:
 			player->m_PlayerStats.mf_Strength += mf_CollectValue;
