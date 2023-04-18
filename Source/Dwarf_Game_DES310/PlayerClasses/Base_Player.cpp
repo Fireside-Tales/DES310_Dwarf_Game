@@ -302,9 +302,9 @@ void ABase_Player::HandlePlayerStates()
 		}
 		else  
 		{
-			if (m_PlayerStates != Attacking && m_PlayerStates != Throwing)  // checks that the player isn't attacking or throwing
+			if (m_PlayerStates != PlayerStates::Attacking && m_PlayerStates !=  PlayerStates::Throwing)  // checks that the player isn't attacking or throwing
 			{
-				m_PlayerStates = Aiming;  // sets the player state to aiming
+				m_PlayerStates = PlayerStates::Aiming;  // sets the player state to aiming
 			}
 		}
 	}

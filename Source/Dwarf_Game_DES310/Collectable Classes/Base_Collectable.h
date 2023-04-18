@@ -9,9 +9,7 @@
 UENUM(BlueprintType)
 enum CollectibleType
 {
-	Health = 0,
-	MaxHealth,
-	SwingSpeed,
+	MaxHealth = 0,
 	MoveSpeed,
 	Strength
 };

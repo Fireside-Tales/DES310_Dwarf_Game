@@ -77,14 +77,9 @@ void ABase_Collectable::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAct
 	{
 		switch (m_CollectibleType)
 		{
-		case CollectibleType::Health:
-			player->m_PlayerStats.mf_Health += mf_CollectValue;
-			break;
+
 		case CollectibleType::MaxHealth:
 			player->m_PlayerStats.mf_MaxHealth += mf_CollectValue;
-			break;
-		case CollectibleType::SwingSpeed:
-			player->m_PlayerStats.mf_SwingSpeed += mf_CollectValue;
 			break;
 		case CollectibleType::MoveSpeed:
 			player->m_PlayerStats.mf_Movespeed += mf_CollectValue;

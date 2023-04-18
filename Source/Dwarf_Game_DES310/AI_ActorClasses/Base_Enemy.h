@@ -7,12 +7,12 @@
 #include "Base_Enemy.generated.h"
 
 UENUM(BlueprintType)
-enum EnemyStates
+enum class EnemyStates:uint8
 {
-	Idle,
-	Moving,
-	Attacking,
-	Dying,
+	Idle UMETA(DisplayName = "Idle"),
+	Moving UMETA(DisplayName = "Moving"),
+	Attacking UMETA(DisplayName = "Attacking"),
+	Dying UMETA(DisplayName = "Dying"),
 };
 
 UCLASS()
@@ -26,9 +26,11 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Enemy States)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 		TEnumAsByte <EnemyStates> m_EnemyStates;
 
+public: 
+	virtual void Tick(float DeltaTime) override;
 	
 
 };

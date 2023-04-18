@@ -39,37 +39,37 @@ struct FPlayerStats
 };
 
 UENUM(BlueprintType)
-enum PlayerStates
+enum class PlayerStates :uint8
 {
-	Idle,
-	Moving,
-	Attacking,
-	Throwing,
-	Aiming,
-	Catching,
-	Dead,
-	Respawning,
-	Emote
+	Idle UMETA(DisplayName = "Idle"),
+	Moving UMETA(DisplayName = "Moving"),
+	Attacking UMETA(DisplayName = "Attacking"),
+	Throwing UMETA(DisplayName = "Throwing"),
+	Aiming UMETA(DisplayName = "Aiming"),
+	Catching UMETA(DisplayName = "Catching"),
+	Dead UMETA(DisplayName = "Dead"),
+	Respawning UMETA(DisplayName = "Respawning"),
+	Emote UMETA(DisplayName = "Emote")
 };
 
 UENUM(BlueprintType)
-enum PlayerAttacks
+enum class PlayerAttacks:uint8
 {
-	None,
-	Light1,
-	Light2,
-	Light3,
-	Heavy1,
-	Heavy2,
-	Heavy3
+	None UMETA(DisplayName = "None"),
+	Light1 UMETA(DisplayName = "Light1"),
+	Light2 UMETA(DisplayName = "Light2"),
+	Light3 UMETA(DisplayName = "Light3"),
+	Heavy1 UMETA(DisplayName = "Heavy1"),
+	Heavy2 UMETA(DisplayName = "Heavy2"),
+	Heavy3 UMETA(DisplayName = "Heavy3")
 };
 UENUM(BlueprintType)
-enum PlayerEmotes
+enum class PlayerEmotes:uint8
 {
-	Emote1,
-	Emote2,
-	Emote3,
-	Emote4
+	Emote1 UMETA(DisplayName = "Emote1"),
+	Emote2 UMETA(DisplayName = "Emote2"),
+	Emote3 UMETA(DisplayName = "Emote3"),
+	Emote4 UMETA(DisplayName = "Emote4")
 };
 
 UCLASS()
@@ -239,6 +239,10 @@ public:
 		return m_PlayerStats.mf_Health / m_PlayerStats.mf_MaxHealth;
 	}
 
-
+	UFUNCTION(BlueprintCallable)
+		void DamagePlayer(float damage) 
+	{
+		m_PlayerStats.mf_Health -= damage; 
+	}
 
 };

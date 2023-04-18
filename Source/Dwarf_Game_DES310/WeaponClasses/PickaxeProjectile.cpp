@@ -6,6 +6,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Dwarf_Game_DES310/PlayerClasses/Base_Player.h"
+#include "Dwarf_Game_DES310/AI_ActorClasses/Base_Enemy.h"
 #include <Kismet/KismetMathLibrary.h>
 
 
@@ -40,7 +41,7 @@ void APickaxeProjectile::BeginPlay()
 		PickMovement->ProjectileGravityScale = 0;
 		PickMovement->SetVelocityInLocalSpace(FVector());
 	}
-	
+
 }
 
 // Called every frame
@@ -281,7 +282,7 @@ void APickaxeProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAc
 				else
 				{
 					damage = 15.f * (500 / abs(GetActorLocation().Length() - playerRef->GetActorLocation().Length()));
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("DAMAGE: %f"),damage));
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("DAMAGE: %f"), damage));
 
 				}
 				if (UKismetMathLibrary::RandomIntegerInRange(0, 100) < 10)
@@ -293,7 +294,61 @@ void APickaxeProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAc
 
 			}
 		}
+
 	}
+	ABase_Enemy* enemy = Cast<ABase_Enemy>(OtherActor);
+	if (IsValid(enemy))
+	{
+		if (mb_Thrown == false)
+		{
+			float damage;
+			switch (playerRef->m_CurrentAttack)
+			{
+			case PlayerAttacks::Light1:
+			case PlayerAttacks::Light2:
+			case PlayerAttacks::Light3:
+				damage = UKismetMathLibrary::RandomIntegerInRange(playerRef->m_PlayerStats.mf_Strength * 0.5f, playerRef->m_PlayerStats.mf_Strength * 1.5f);
+				break;
+
+			case PlayerAttacks::Heavy1:
+			case PlayerAttacks::Heavy2:
+			case PlayerAttacks::Heavy3:
+				damage = UKismetMathLibrary::RandomIntegerInRange(playerRef->m_PlayerStats.mf_Strength * 1.5f, playerRef->m_PlayerStats.mf_Strength * 2.5f);
+				break;
+			default:
+				damage = 0; // it should never hit here
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("NO DAMAGE"));
+				break;
+			}
+			if (UKismetMathLibrary::RandomIntegerInRange(0, 100) < 10)
+			{
+				damage *= 1.5;
+			}
+			enemy->mf_health -= damage;
+		}
+		else
+		{
+			float damage = 0;
+			if (abs(GetActorLocation().Length() - playerRef->GetActorLocation().Length()) < 500)
+			{
+				damage = 15;
+			}
+			else
+			{
+				damage = 15.f * (500 / abs(GetActorLocation().Length() - playerRef->GetActorLocation().Length()));
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("DAMAGE: %f"), damage));
+
+			}
+			if (UKismetMathLibrary::RandomIntegerInRange(0, 100) < 10)
+			{
+				damage *= 1.5;
+			}
+			enemy->mf_health -= damage;
+			
+
+		}
+	}
+
 
 }
 
@@ -330,7 +385,7 @@ bool APickaxeProjectile::LineTraceMethod(FHitResult& OutHit)
 
 	parameters.AddIgnoredActor(this);
 	parameters.AddIgnoredActor(playerRef);
-	
+
 
 	return GetWorld()->LineTraceSingleByChannel(OutHit, start, end, ECC_Visibility, parameters);
 }
@@ -344,7 +399,7 @@ bool APickaxeProjectile::InitSphereTrace(FHitResult& OutHit)
 
 	ignoreActors.Add(this);
 	ignoreActors.Add(playerRef);
-	
+
 
 	return UKismetSystemLibrary::SphereTraceSingle(GetWorld(), start, end, 5.0f, ETraceTypeQuery::TraceTypeQuery1, false, ignoreActors, EDrawDebugTrace::None, OutHit, true);
 }
