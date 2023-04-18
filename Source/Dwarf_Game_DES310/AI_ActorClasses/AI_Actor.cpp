@@ -23,7 +23,7 @@ void AAI_Actor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (mf_health < 0) 
+	if (mf_health <= 0) 
 	{
 		mf_health = 0; 
 		mb_isAlive = false;
