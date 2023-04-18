@@ -23,7 +23,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	float mf_health;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float mf_health;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool mb_isAlive;
