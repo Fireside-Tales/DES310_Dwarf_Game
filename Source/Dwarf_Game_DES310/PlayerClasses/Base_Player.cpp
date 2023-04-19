@@ -77,6 +77,11 @@ void ABase_Player::Tick(float DeltaTime)
 			mb_HasHeirloom = false;
 		}
 	}
+	if (IsValid(m_heirloom) == false)
+	{
+		mb_HasHeirloom = false;
+	}
+	
 
 }
 
