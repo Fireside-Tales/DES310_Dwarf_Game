@@ -10,6 +10,8 @@
 //#include "Blueprint/UserWidget.h"
 #include "Dwarf_Game_DES310/Collectable Classes/Heirloom_Class.h"
 
+#include "EngineUtils.h"
+
 #include "Base_Player.generated.h"
 
 USTRUCT(BlueprintType)
@@ -249,6 +251,9 @@ public:
 	{
 		m_PlayerStats.mf_Health = m_PlayerStats.mf_MaxHealth;
 		m_PlayerStats.isAlive = true;
-
+		for (TActorIterator<AHeirloom_Class> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+		{
+			m_heirloom = *ActorItr;
+		}
 	}
 };

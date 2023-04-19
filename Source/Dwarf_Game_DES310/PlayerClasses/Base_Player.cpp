@@ -75,12 +75,10 @@ void ABase_Player::Tick(float DeltaTime)
 
 			m_heirloom->DetachFromActor(*detach);
 			mb_HasHeirloom = false;
+			m_heirloom = nullptr; 
 		}
 	}
-	if (IsValid(m_heirloom))
-	{
-		mb_HasHeirloom = false;
-	}
+	
 	
 
 }
