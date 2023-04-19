@@ -431,9 +431,13 @@ void ABase_Player::StealHeirloom()
 	}
 	for (TActorIterator<ABase_Player> ActorItr(GetWorld()); ActorItr; ++ActorItr)
 	{
+		
 		if (*ActorItr != this) 
 		{
 			ActorItr->mb_HasHeirloom = false; 
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("THIS HAS HIT"));
+
+
 		}
 	}
 }
