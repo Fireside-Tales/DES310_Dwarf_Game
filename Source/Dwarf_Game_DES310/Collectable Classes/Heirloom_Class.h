@@ -10,8 +10,8 @@ UCLASS()
 class DWARF_GAME_DES310_API AHeirloom_Class : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	AHeirloom_Class();
 
@@ -19,11 +19,11 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	UFUNCTION(BlueprintCallable)
-		 void SnapToPlayer(USceneComponent* dwarfHeirloomPivot);
+		void SnapToPlayer(USceneComponent* dwarfHeirloomPivot);
 
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)

@@ -72,7 +72,9 @@ void ABase_Player::Tick(float DeltaTime)
 		if (IsValid(m_heirloom))
 		{
 			FDetachmentTransformRules* detach = new FDetachmentTransformRules(EDetachmentRule::KeepWorld, EDetachmentRule::KeepWorld, EDetachmentRule::KeepWorld, false);
+
 			m_heirloom->DetachFromActor(*detach);
+			mb_HasHeirloom = false;
 		}
 	}
 
@@ -211,8 +213,8 @@ void ABase_Player::Aim()
 	mf_GamepadTurnRate = 0.75;
 	mf_CameraTurnRate = 30.f;
 	GetCharacterMovement()->MaxWalkSpeed = 250.0f;
-	m_NextAttack.Empty(); 
-	m_CurrentAttack = PlayerAttacks::None; 
+	m_NextAttack.Empty();
+	m_CurrentAttack = PlayerAttacks::None;
 }
 
 void ABase_Player::ReleaseAim()
@@ -287,6 +289,7 @@ void ABase_Player::HandlePlayerStates()
 			case PlayerStates::Throwing:
 			case PlayerStates::Attacking:
 			case PlayerStates::Emote:
+			case PlayerStates::Respawning:
 				break;
 
 			default: // on everyother state it will do this
