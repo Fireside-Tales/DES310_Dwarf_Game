@@ -75,11 +75,11 @@ void ABase_Player::Tick(float DeltaTime)
 
 			m_heirloom->DetachFromActor(*detach);
 			mb_HasHeirloom = false;
-			m_heirloom = nullptr; 
+			m_heirloom = nullptr;
 		}
 	}
-	
-	
+
+
 
 }
 
@@ -427,6 +427,13 @@ void ABase_Player::StealHeirloom()
 			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("BUTTON PRESSED"));
 			m_heirloom->SnapToPlayer(m_PlayerHeirloomPivot);
 			mb_HasHeirloom = true;
+		}
+	}
+	for (TActorIterator<ABase_Player> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+	{
+		if (*ActorItr != this) 
+		{
+			ActorItr->mb_HasHeirloom = false; 
 		}
 	}
 }
