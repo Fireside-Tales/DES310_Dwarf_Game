@@ -340,6 +340,8 @@ void ABase_Player::HandlePlayerStats()
 	{
 		m_PlayerStats.mf_Health = 0;
 		m_PlayerStats.isAlive = false;
+		m_NextAttack.Empty();
+		m_CurrentAttack = PlayerAttacks::None;
 	}
 	// stamina
 	if (m_PlayerStats.mf_Stamina > m_PlayerStats.mf_MaxStamina)
