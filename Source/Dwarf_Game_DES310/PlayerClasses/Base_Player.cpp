@@ -67,11 +67,11 @@ void ABase_Player::Tick(float DeltaTime)
 		GetCapsuleComponent()->SetWorldRotation(AimRotation);
 	}
 
-	if (m_PlayerStats.isAlive == false) 
+	if (m_PlayerStats.isAlive == false)
 	{
-		if (IsValid(m_heirloom)) 
+		if (IsValid(m_heirloom))
 		{
-			FDetachmentTransformRules* detach = new FDetachmentTransformRules(EDetachmentRule::KeepWorld, EDetachmentRule::KeepWorld, EDetachmentRule::KeepWorld,false); 
+			FDetachmentTransformRules* detach = new FDetachmentTransformRules(EDetachmentRule::KeepWorld, EDetachmentRule::KeepWorld, EDetachmentRule::KeepWorld, false);
 			m_heirloom->DetachFromActor(*detach);
 		}
 	}
@@ -115,7 +115,7 @@ void ABase_Player::ThrowInput()
 
 void ABase_Player::LightAttackInput()
 {
-	if (m_AxeRef->mb_Thrown == false && mb_Aiming == false) // checks if the axe has not been thrown and the player isn't aiming
+	if (m_AxeRef->mb_Thrown == false) // checks if the axe has not been thrown and the player isn't aiming
 	{
 		if (m_PlayerStates != PlayerStates::Attacking)
 		{
@@ -148,7 +148,7 @@ void ABase_Player::LightAttackInput()
 }
 void ABase_Player::HeavyAttackInput()
 {
-	if (m_AxeRef->mb_Thrown == false && mb_Aiming == false)
+	if (m_AxeRef->mb_Thrown == false)
 	{
 		if (m_PlayerStates != PlayerStates::Attacking)
 		{
@@ -211,7 +211,8 @@ void ABase_Player::Aim()
 	mf_GamepadTurnRate = 0.75;
 	mf_CameraTurnRate = 30.f;
 	GetCharacterMovement()->MaxWalkSpeed = 250.0f;
-
+	m_NextAttack.Empty(); 
+	m_CurrentAttack = PlayerAttacks::None; 
 }
 
 void ABase_Player::ReleaseAim()
@@ -300,9 +301,9 @@ void ABase_Player::HandlePlayerStates()
 				break;
 			}
 		}
-		else  
+		else
 		{
-			if (m_PlayerStates != PlayerStates::Attacking && m_PlayerStates !=  PlayerStates::Throwing)  // checks that the player isn't attacking or throwing
+			if (m_PlayerStates != PlayerStates::Attacking && m_PlayerStates != PlayerStates::Throwing)  // checks that the player isn't attacking or throwing
 			{
 				m_PlayerStates = PlayerStates::Aiming;  // sets the player state to aiming
 			}
