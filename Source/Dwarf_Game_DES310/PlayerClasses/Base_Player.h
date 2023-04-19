@@ -53,7 +53,7 @@ enum class PlayerStates :uint8
 };
 
 UENUM(BlueprintType)
-enum class PlayerAttacks:uint8
+enum class PlayerAttacks :uint8
 {
 	None UMETA(DisplayName = "None"),
 	Light1 UMETA(DisplayName = "Light1"),
@@ -64,7 +64,7 @@ enum class PlayerAttacks:uint8
 	Heavy3 UMETA(DisplayName = "Heavy3")
 };
 UENUM(BlueprintType)
-enum class PlayerEmotes:uint8
+enum class PlayerEmotes :uint8
 {
 	Emote1 UMETA(DisplayName = "Emote1"),
 	Emote2 UMETA(DisplayName = "Emote2"),
@@ -240,9 +240,15 @@ public:
 	}
 
 	UFUNCTION(BlueprintCallable)
-		void DamagePlayer(float damage) 
+		void DamagePlayer(float damage)
 	{
-		m_PlayerStats.mf_Health -= damage; 
+		m_PlayerStats.mf_Health -= damage;
 	}
+	UFUNCTION(BlueprintCallable)
+		void RespawnPlayer()
+	{
+		m_PlayerStats.mf_Health = m_PlayerStats.mf_MaxHealth;
+		m_PlayerStats.isAlive = true;
 
+	}
 };
