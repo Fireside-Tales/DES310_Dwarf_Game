@@ -216,8 +216,11 @@ void ABase_Player::Aim()
 	mf_GamepadTurnRate = 0.75;
 	mf_CameraTurnRate = 30.f;
 	GetCharacterMovement()->MaxWalkSpeed = 250.0f;
-	m_NextAttack.Empty();
-	m_CurrentAttack = PlayerAttacks::None;
+	if (m_NextAttack.IsEmpty() == false)
+	{
+		m_NextAttack.Empty();
+		m_CurrentAttack = PlayerAttacks::None;
+	}
 }
 
 void ABase_Player::ReleaseAim()
@@ -340,8 +343,11 @@ void ABase_Player::HandlePlayerStats()
 	{
 		m_PlayerStats.mf_Health = 0;
 		m_PlayerStats.isAlive = false;
-		m_NextAttack.Empty();
-		m_CurrentAttack = PlayerAttacks::None;
+		if(m_NextAttack.IsEmpty() == false)
+		{
+			m_NextAttack.Empty();
+			m_CurrentAttack = PlayerAttacks::None;		
+		}
 	}
 	// stamina
 	if (m_PlayerStats.mf_Stamina > m_PlayerStats.mf_MaxStamina)

@@ -21,7 +21,9 @@ float UMetaSoundControllerBPLibrary::MetaSoundControllerSampleFunction(float Par
 
 void UMetaSoundControllerBPLibrary::SetMasterVolume(float master)
 {
-	mf_MasterVolume += master; 
+	mf_MasterVolume = master; 
+	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Master %f"), mf_MasterVolume));
+
 }
 
 void UMetaSoundControllerBPLibrary::SetMusicVolume(float music)
