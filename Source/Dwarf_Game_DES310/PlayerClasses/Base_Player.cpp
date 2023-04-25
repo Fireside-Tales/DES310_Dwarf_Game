@@ -322,6 +322,11 @@ void ABase_Player::HandlePlayerStates()
 	{
 		m_PlayerStates = PlayerStates::Dead; // sets the player state to dead
 		GEngine->AddOnScreenDebugMessage(-1, 0.1f, FColor::Blue, FString::Printf(TEXT("DEAD")));
+		if (m_NextAttack.IsEmpty() == false)
+		{
+			m_NextAttack.Empty();
+			m_CurrentAttack = PlayerAttacks::None;
+		}
 	}
 }
 
