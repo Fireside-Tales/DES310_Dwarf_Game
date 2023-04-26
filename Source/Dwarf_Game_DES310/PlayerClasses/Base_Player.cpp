@@ -90,8 +90,12 @@ void ABase_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 	InputComponent->BindAction("StealHeirloom", IE_Pressed, this, &ABase_Player::StealHeirloom);
 	InputComponent->BindAction("Throw", IE_Pressed, this, &ABase_Player::ThrowInput);
-	InputComponent->BindAction("Light Attack", IE_Pressed, this, &ABase_Player::LightAttackInput);
-	InputComponent->BindAction("Heavy Attack", IE_Pressed, this, &ABase_Player::HeavyAttackInput);
+
+	// this is just diconnecting the attacks for now
+	// these will be looked at again on a later date
+	// 
+	//InputComponent->BindAction("Light Attack", IE_Pressed, this, &ABase_Player::LightAttackInput);
+	//InputComponent->BindAction("Heavy Attack", IE_Pressed, this, &ABase_Player::HeavyAttackInput);
 
 
 	InputComponent->BindAction("PlayerDash", IE_Pressed, this, &ABase_Player::ToggleDash);
@@ -192,7 +196,6 @@ void ABase_Player::HandleAttacks()
 		{
 			m_NextAttack.Dequeue(m_CurrentAttack);
 			mb_AttackFinished = false;
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("DEqueued")));
 
 
 		}
@@ -201,8 +204,6 @@ void ABase_Player::HandleAttacks()
 			m_CurrentAttack = PlayerAttacks::None;
 			m_PlayerStates = PlayerStates::Idle;
 			mb_AttackFinished = false;
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("FINISHED ATTACK")));
-
 		}
 	}
 }
@@ -321,12 +322,12 @@ void ABase_Player::HandlePlayerStates()
 	else
 	{
 		m_PlayerStates = PlayerStates::Dead; // sets the player state to dead
-		GEngine->AddOnScreenDebugMessage(-1, 0.1f, FColor::Blue, FString::Printf(TEXT("DEAD")));
-		if (m_NextAttack.IsEmpty() == false)
+		if (m_NextAttack.IsEmpty() == false) // checks if the attack queue is not empty
 		{
-			m_NextAttack.Empty();
+			m_NextAttack.Empty(); // empties it and resets the attack
 			m_CurrentAttack = PlayerAttacks::None;
 		}
+		mb_HasHeirloom = false;
 	}
 }
 
@@ -348,10 +349,11 @@ void ABase_Player::HandlePlayerStats()
 	{
 		m_PlayerStats.mf_Health = 0;
 		m_PlayerStats.isAlive = false;
-		if(m_NextAttack.IsEmpty() == false)
+		if (m_NextAttack.IsEmpty() == false)
 		{
 			m_NextAttack.Empty();
-			m_CurrentAttack = PlayerAttacks::None;		
+			m_CurrentAttack = PlayerAttacks::None;
+
 		}
 	}
 	// stamina
@@ -416,7 +418,6 @@ void ABase_Player::PlayerDash(float delta)
 		m_PlayerStats.mf_Stamina -= (delta / 2);
 
 		GetCharacterMovement()->MaxWalkSpeed = 1000.f;
-		GEngine->AddOnScreenDebugMessage(-1, .01f, FColor::Yellow, TEXT("DASH"));
 		mf_StaminaRegen = 0.f;
 	}
 	else
@@ -437,20 +438,8 @@ void ABase_Player::StealHeirloom()
 {
 	if (!mb_HasHeirloom) {
 		if (mb_IsPlayerInRange) {
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("BUTTON PRESSED"));
 			m_heirloom->SnapToPlayer(m_PlayerHeirloomPivot);
 			mb_HasHeirloom = true;
-		}
-	}
-	for (TActorIterator<ABase_Player> ActorItr(GetWorld()); ActorItr; ++ActorItr)
-	{
-		
-		if (*ActorItr != this) 
-		{
-			ActorItr->mb_HasHeirloom = false; 
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("THIS HAS HIT"));
-
-
 		}
 	}
 }
