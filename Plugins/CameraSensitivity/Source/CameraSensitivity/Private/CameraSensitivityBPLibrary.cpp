@@ -3,8 +3,8 @@
 #include "CameraSensitivityBPLibrary.h"
 #include "CameraSensitivity.h"
 
-float Horizontal = 0.5f;
-float Vertical = 0.5f;
+float Horizontal = 30.f;
+float Vertical = 30.f;
 
 UCameraSensitivityBPLibrary::UCameraSensitivityBPLibrary(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
