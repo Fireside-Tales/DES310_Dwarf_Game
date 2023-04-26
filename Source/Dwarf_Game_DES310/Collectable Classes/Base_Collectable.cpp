@@ -65,9 +65,11 @@ void ABase_Collectable::Tick(float DeltaTime)
 			mb_Bounce = true;
 		}
 	}
-
-	m_Mesh->SetRelativeLocation(FVector(0, 0, mf_yOffset));
-	m_Mesh->SetRelativeRotation(FRotator(0, mf_yawRotation, 0));
+	if (IsValid(m_Mesh)) 
+	{
+		m_Mesh->SetRelativeLocation(FVector(0, 0, mf_yOffset));
+		m_Mesh->SetRelativeRotation(FRotator(0, mf_yawRotation, 0));	
+	}
 
 }
 void ABase_Collectable::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

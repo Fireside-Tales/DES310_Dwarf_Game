@@ -282,6 +282,8 @@ void APickaxeProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAc
 				if (abs(GetActorLocation().Length() - playerRef->GetActorLocation().Length()) < 500)
 				{
 					damage = 15;
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("DAMAGE: %f"), damage));
+
 				}
 				else
 				{
@@ -300,15 +302,7 @@ void APickaxeProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAc
 		}
 
 	}
-	//if (ABase_Collectable* collect = Cast<ABase_Collectable>(OtherActor)) 
-	//{
-	//	if (AxeState == AxeStates::Returning) 
-	//	{
-	//		FAttachmentTransformRules* attachRules = new FAttachmentTransformRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, true);
 
-	//		OtherActor->AttachToComponent(, *attachRules);
-	//	}
-	//}
 
 	if (!Cast<USphereComponent>(OtherComp))
 	{

@@ -90,7 +90,7 @@ void ABase_Player::Tick(float DeltaTime)
 	{
 		mb_HasHeirloom = false;
 	}
-
+	GetMesh();
 
 }
 
@@ -228,6 +228,7 @@ void ABase_Player::Aim()
 	mf_GamepadTurnRate = 0.75;
 	mf_CameraTurnRate = 30.f;
 	GetCharacterMovement()->MaxWalkSpeed = 250.0f;
+	mb_isDashing = false; 
 	if (m_NextAttack.IsEmpty() == false)
 	{
 		m_NextAttack.Empty();
@@ -327,6 +328,7 @@ void ABase_Player::HandlePlayerStates()
 			if (m_PlayerStates != PlayerStates::Attacking && m_PlayerStates != PlayerStates::Throwing)  // checks that the player isn't attacking or throwing
 			{
 				m_PlayerStates = PlayerStates::Aiming;  // sets the player state to aiming
+				mb_isDashing = false; 
 			}
 		}
 	}
