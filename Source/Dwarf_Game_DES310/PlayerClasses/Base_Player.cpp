@@ -74,11 +74,22 @@ void ABase_Player::Tick(float DeltaTime)
 			FDetachmentTransformRules* detach = new FDetachmentTransformRules(EDetachmentRule::KeepWorld, EDetachmentRule::KeepWorld, EDetachmentRule::KeepWorld, false);
 
 			m_heirloom->DetachFromActor(*detach);
+
 			mb_HasHeirloom = false;
-			m_heirloom = nullptr;
+			if (m_heirloom->m_PlayerRef == this) 
+			{
+				m_heirloom->NullPlayerRef(); 
+			}
 		}
 	}
-
+	if (m_heirloom->m_PlayerRef == this)
+	{
+		mb_HasHeirloom = true;
+	}
+	else 
+	{
+		mb_HasHeirloom = false;
+	}
 
 
 }
@@ -98,8 +109,8 @@ void ABase_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	//InputComponent->BindAction("Heavy Attack", IE_Pressed, this, &ABase_Player::HeavyAttackInput);
 
 
-	InputComponent->BindAction("PlayerDash", IE_Pressed, this, &ABase_Player::ToggleDash);
-	InputComponent->BindAction("PlayerDash", IE_Released, this, &ABase_Player::ToggleDash);
+	InputComponent->BindAction("PlayerDash", IE_Pressed, this, &ABase_Player::EnableDash);
+	InputComponent->BindAction("PlayerDash", IE_Released, this, &ABase_Player::DisableDash);
 
 	InputComponent->BindAction("Emote1", IE_Pressed, this, &ABase_Player::FirstEmote);
 	InputComponent->BindAction("Emote2", IE_Pressed, this, &ABase_Player::SecondEmote);
@@ -396,7 +407,7 @@ void ABase_Player::InitialiseCamera()
 	SpringArmcomp->TargetArmLength = mf_SpringIdleLength;
 }
 
-void ABase_Player::ToggleDash()
+void ABase_Player::EnableDash()
 {
 	if (!mb_isDashing)
 	{
@@ -405,10 +416,11 @@ void ABase_Player::ToggleDash()
 			mb_isDashing = true;
 		}
 	}
-	else
-	{
-		mb_isDashing = false;
-	}
+}
+
+void ABase_Player::DisableDash()
+{
+	mb_isDashing = false;
 }
 
 void ABase_Player::PlayerDash(float delta)
@@ -438,8 +450,7 @@ void ABase_Player::StealHeirloom()
 {
 	if (!mb_HasHeirloom) {
 		if (mb_IsPlayerInRange) {
-			m_heirloom->SnapToPlayer(m_PlayerHeirloomPivot);
-			mb_HasHeirloom = true;
+			m_heirloom->SnapToPlayer(GetMesh(),this);
 		}
 	}
 }

@@ -169,7 +169,8 @@ protected:
 
 	void InitialiseCamera();
 
-	void ToggleDash();
+	void EnableDash();
+	void DisableDash(); 
 
 	UFUNCTION(BlueprintCallable)
 		void PlayerDash(float delta);

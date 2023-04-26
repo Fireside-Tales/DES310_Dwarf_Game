@@ -7,6 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Dwarf_Game_DES310/PlayerClasses/Base_Player.h"
 #include "Dwarf_Game_DES310/AI_ActorClasses/Base_Enemy.h"
+#include "Dwarf_Game_DES310/Collectable Classes/Base_Collectable.h"
 #include "Components/SphereComponent.h"
 #include <Kismet/KismetMathLibrary.h>
 
@@ -241,8 +242,7 @@ void APickaxeProjectile::InitVariables(UProjectileMovementComponent* projectileM
 
 void APickaxeProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	ABase_Player* otherPlayer = Cast<ABase_Player>(OtherActor);
-	if (IsValid(otherPlayer))
+	if (ABase_Player* otherPlayer = Cast<ABase_Player>(OtherActor))
 	{
 		if (otherPlayer != playerRef)
 		{
@@ -300,6 +300,15 @@ void APickaxeProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAc
 		}
 
 	}
+	//if (ABase_Collectable* collect = Cast<ABase_Collectable>(OtherActor)) 
+	//{
+	//	if (AxeState == AxeStates::Returning) 
+	//	{
+	//		FAttachmentTransformRules* attachRules = new FAttachmentTransformRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, true);
+
+	//		OtherActor->AttachToComponent(, *attachRules);
+	//	}
+	//}
 
 	if (!Cast<USphereComponent>(OtherComp))
 	{
