@@ -67,14 +67,11 @@ void ABase_Player::Tick(float DeltaTime)
 		GetCapsuleComponent()->SetWorldRotation(AimRotation);
 	}
 
-	if (m_PlayerStats.isAlive == false)
+	if (m_PlayerStats.isAlive == false && mb_HasHeirloom)
 	{
 		if (IsValid(m_heirloom))
 		{
 			FDetachmentTransformRules* detach = new FDetachmentTransformRules(EDetachmentRule::KeepWorld, EDetachmentRule::KeepWorld, EDetachmentRule::KeepWorld, false);
-
-			m_heirloom->DetachFromActor(*detach);
-
 			mb_HasHeirloom = false;
 			if (m_heirloom->m_PlayerRef == this) 
 			{
