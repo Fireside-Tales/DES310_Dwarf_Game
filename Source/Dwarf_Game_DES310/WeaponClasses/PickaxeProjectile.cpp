@@ -272,8 +272,8 @@ void APickaxeProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAc
 					damage *= 1.5;
 				}
 
-				USoundBase* Sound = LoadObject<USoundBase>(nullptr, TEXT("DES310_Dwarf_Game/Content/Sound/SFX/Pickaxe/Pickaxe_Embed.uasset")); // gets the sound that is getting played
-				UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation()); // plays the sound at this location
+				//USoundBase* Sound = LoadObject<USoundBase>(nullptr, TEXT("DES310_Dwarf_Game/Content/Sound/SFX/Pickaxe/Pickaxe_Embed.uasset")); // gets the sound that is getting played
+				//UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation()); // plays the sound at this location
 				otherPlayer->m_PlayerStats.mf_Health -= damage;
 			}
 			else
