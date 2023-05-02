@@ -428,7 +428,14 @@ void ABase_Player::PlayerDash(float delta)
 	{
 		m_PlayerStats.mf_Stamina -= (delta / 2);
 
-		GetCharacterMovement()->MaxWalkSpeed = 1000.f;
+		if (mb_HasHeirloom) 
+		{
+			GetCharacterMovement()->MaxWalkSpeed = 700.f;
+		}
+		else 
+		{
+			GetCharacterMovement()->MaxWalkSpeed = 1000.f;
+		}
 		mf_StaminaRegen = 0.f;
 	}
 	else
@@ -440,7 +447,14 @@ void ABase_Player::PlayerDash(float delta)
 		}
 		if (mb_Aiming == false)
 		{
-			GetCharacterMovement()->MaxWalkSpeed = 600.f;
+			if (mb_HasHeirloom)
+			{
+				GetCharacterMovement()->MaxWalkSpeed = 400.f;
+			}
+			else
+			{
+				GetCharacterMovement()->MaxWalkSpeed = 600.f;
+			}
 		}
 	}
 }
