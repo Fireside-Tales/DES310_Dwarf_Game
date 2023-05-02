@@ -400,7 +400,7 @@ void ABase_Player::InitialiseCamera()
 	mv_RangedCameraVec = FVector(0, 60, 50); // aimed location for the camera 
 
 	mf_SpringIdleLength = 125.f; // starting length of the camera
-	mf_SpringAimLength = 100.f;  // aim length for the camera
+	mf_SpringAimLength = 60.f;  // aim length for the camera
 
 	SpringArmcomp->SocketOffset = mv_CameraVec;
 	SpringArmcomp->TargetArmLength = mf_SpringIdleLength;
