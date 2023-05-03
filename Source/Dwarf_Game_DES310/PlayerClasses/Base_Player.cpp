@@ -73,9 +73,9 @@ void ABase_Player::Tick(float DeltaTime)
 		{
 			FDetachmentTransformRules* detach = new FDetachmentTransformRules(EDetachmentRule::KeepWorld, EDetachmentRule::KeepWorld, EDetachmentRule::KeepWorld, false);
 			mb_HasHeirloom = false;
-			if (m_heirloom->m_PlayerRef == this) 
+			if (m_heirloom->m_PlayerRef == this)
 			{
-				m_heirloom->NullPlayerRef(); 
+				m_heirloom->NullPlayerRef();
 			}
 		}
 	}
@@ -83,7 +83,7 @@ void ABase_Player::Tick(float DeltaTime)
 	{
 		mb_HasHeirloom = true;
 	}
-	else 
+	else
 	{
 		mb_HasHeirloom = false;
 	}
@@ -225,7 +225,7 @@ void ABase_Player::Aim()
 	mf_GamepadTurnRate = 0.75;
 	mf_CameraTurnRate = 30.f;
 	GetCharacterMovement()->MaxWalkSpeed = 250.0f;
-	mb_isDashing = false; 
+	mb_isDashing = false;
 	if (m_NextAttack.IsEmpty() == false)
 	{
 		m_NextAttack.Empty();
@@ -325,7 +325,7 @@ void ABase_Player::HandlePlayerStates()
 			if (m_PlayerStates != PlayerStates::Attacking && m_PlayerStates != PlayerStates::Throwing)  // checks that the player isn't attacking or throwing
 			{
 				m_PlayerStates = PlayerStates::Aiming;  // sets the player state to aiming
-				mb_isDashing = false; 
+				mb_isDashing = false;
 			}
 		}
 	}
@@ -426,13 +426,18 @@ void ABase_Player::PlayerDash(float delta)
 {
 	if (mb_isDashing)
 	{
-		m_PlayerStats.mf_Stamina -= (delta / 2);
+		if (GetCharacterMovement()->Velocity.Length() > 0)
+		{
+			m_PlayerStats.mf_Stamina -= (delta / 2);
+		}
 
-		if (mb_HasHeirloom) 
+
+
+		if (mb_HasHeirloom)
 		{
 			GetCharacterMovement()->MaxWalkSpeed = 700.f;
 		}
-		else 
+		else
 		{
 			GetCharacterMovement()->MaxWalkSpeed = 1000.f;
 		}
@@ -463,7 +468,7 @@ void ABase_Player::StealHeirloom()
 {
 	if (!mb_HasHeirloom) {
 		if (mb_IsPlayerInRange) {
-			m_heirloom->SnapToPlayer(GetMesh(),this);
+			m_heirloom->SnapToPlayer(GetMesh(), this);
 		}
 	}
 }

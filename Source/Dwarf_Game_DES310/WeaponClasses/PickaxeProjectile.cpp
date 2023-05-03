@@ -278,24 +278,27 @@ void APickaxeProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAc
 			}
 			else
 			{
-				float damage = 0;
-				if (abs(GetActorLocation().Length() - playerRef->GetActorLocation().Length()) < 500)
+				if (AxeState != AxeStates::Lodged)
 				{
-					damage = 15;
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("DAMAGE: %f"), damage));
+					float damage = 0;
+					if (abs(GetActorLocation().Length() - playerRef->GetActorLocation().Length()) < 500)
+					{
+						damage = 15;
+						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("DAMAGE: %f"), damage));
 
-				}
-				else
-				{
-					damage = 15.f * (500 / abs(GetActorLocation().Length() - playerRef->GetActorLocation().Length()));
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("DAMAGE: %f"), damage));
+					}
+					else
+					{
+						damage = 15.f * (500 / abs(GetActorLocation().Length() - playerRef->GetActorLocation().Length()));
+						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("DAMAGE: %f"), damage));
 
+					}
+					if (UKismetMathLibrary::RandomIntegerInRange(0, 100) < 10)
+					{
+						damage *= 1.5;
+					}
+					otherPlayer->m_PlayerStats.mf_Health -= damage;
 				}
-				if (UKismetMathLibrary::RandomIntegerInRange(0, 100) < 10)
-				{
-					damage *= 1.5;
-				}
-				otherPlayer->m_PlayerStats.mf_Health -= damage;
 
 
 			}
