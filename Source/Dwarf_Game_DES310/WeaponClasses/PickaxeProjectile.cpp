@@ -17,10 +17,10 @@ APickaxeProjectile::APickaxeProjectile()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
-	PickMovement = CreateDefaultSubobject<UProjectileMovementComponent>(FName(TEXT("Pick Movement")));
+	PickMovement = CreateOptionalDefaultSubobject<UProjectileMovementComponent>(FName(TEXT("Pick Movement")));
 
 
-	m_AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
+	m_AudioComponent = CreateOptionalDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
 	m_AudioComponent->bAutoActivate = false;
 	m_AudioComponent->SetupAttachment(RootComponent);
 	m_AudioComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
