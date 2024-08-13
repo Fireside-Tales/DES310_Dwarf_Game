@@ -24,11 +24,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		USceneComponent* m_PivotPoint;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		USceneComponent* m_LodgePoint;
-
 };
