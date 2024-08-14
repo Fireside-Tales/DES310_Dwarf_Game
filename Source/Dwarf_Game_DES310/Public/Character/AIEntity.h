@@ -3,28 +3,25 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
-#include "BaseEntity.generated.h"
+#include "Character/BaseEntity.h"
+#include "AIEntity.generated.h"
 
+/**
+ *
+ */
+class UStatsComponent;
 UCLASS()
-class DWARF_GAME_DES310_API ABaseEntity : public ACharacter
+class DWARF_GAME_DES310_API AAIEntity : public ABaseEntity
 {
 	GENERATED_BODY()
-
 public:
-	// Sets default values for this character's properties
-	ABaseEntity();
-
+	AAIEntity();
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
 public:
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-
+private:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
+	TObjectPtr<UStatsComponent> StatsComponent;
 };

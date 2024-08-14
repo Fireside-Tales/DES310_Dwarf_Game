@@ -24,20 +24,22 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	void DamageHealth(float Damage);
-	void RecoverHealth(float Heal);
+	virtual void DamageHealth(float Damage);
+	virtual void RecoverHealth(float Heal);
+	virtual void KillCharacter() { IsAlive = false; }
 
-	
-
+	UFUNCTION(BLueprintPure)
+	float GetHealth() const { return Health; }
+	UFUNCTION(BLueprintPure)
+	float GetMaxHealth() const { return MaxHealth; }
+	UFUNCTION(BLueprintPure)
+	bool GetIsAlive() const { return IsAlive; }
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
 	float Health;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
 	float MaxHealth;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
-	float Stamina;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
-	float MaxStamina;
+
 	bool IsAlive = true;
 
 };

@@ -19,9 +19,7 @@ void UStatsComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	Health = MaxHealth;
-	Stamina = MaxStamina;
-
-
+	
 }
 // Called every frame
 void UStatsComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
