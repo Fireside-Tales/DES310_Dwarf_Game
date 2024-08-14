@@ -32,5 +32,6 @@ private:
 	TObjectPtr<UCameraComponent> Camera;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = true))
 	TObjectPtr<USpringArmComponent> SpringArm;
-	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon", meta = (AllowPrivateAccess = true))
+	TObjectPtr<UChildActorComponent> Pickaxe;
 };

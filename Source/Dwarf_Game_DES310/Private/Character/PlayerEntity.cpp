@@ -5,6 +5,7 @@
 #include "Components/PlayerStatsComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Components/CapsuleComponent.h"
 
 APlayerEntity::APlayerEntity() :ABaseEntity()
 {
@@ -17,6 +18,9 @@ APlayerEntity::APlayerEntity() :ABaseEntity()
 	Camera = CreateOptionalDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	
 	Camera->SetupAttachment(SpringArm);
+
+	Pickaxe = CreateOptionalDefaultSubobject<UChildActorComponent>(TEXT("Pickaxe")); 
+	Pickaxe->SetupAttachment(GetMesh()); 
 
 	PlayerStatsComponent = CreateOptionalDefaultSubobject<UPlayerStatsComponent>(TEXT("PlayerStatsComponent"));
 }
