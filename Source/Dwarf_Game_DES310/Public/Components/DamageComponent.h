@@ -7,7 +7,7 @@
 #include "DamageComponent.generated.h"
 
 UENUM()
-enum class DamageType : uint8
+enum class EDamageType : uint8
 {
 	Melee UMETA(DisplayName = "Melee"),
 	Ranged UMETA(DisplayName = "Range"),
@@ -33,6 +33,9 @@ public:
 
 	float CalculateDamage(); 
 
+	void SetDamageType(EDamageType NewDamageType) { DamageType = NewDamageType; }
+	EDamageType GetDamageType() { return DamageType; } 
+
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
 	float MinDamageMult;
@@ -42,5 +45,8 @@ private:
 	float MeleeDamage(); 
 	float RangedDamage(); 
 	float HazardDamage(); 
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
+	EDamageType DamageType;
 
 };

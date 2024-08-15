@@ -5,7 +5,7 @@
 #include <Kismet/KismetMathLibrary.h>
 
 // Sets default values for this component's properties
-UDamageComponent::UDamageComponent()
+UDamageComponent::UDamageComponent() : MinDamageMult(1.0f), MaxDamageMult(1.0f), DamageType(EDamageType::Melee)
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
@@ -32,9 +32,21 @@ void UDamageComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 float UDamageComponent::CalculateDamage()
 {
-	float FinalDamage;
+	float FinalDamage = 0;
+	switch (DamageType)
+	{
+	case EDamageType::Melee:
+		FinalDamage = MeleeDamage();
+		break;
+	case EDamageType::Ranged:
+		FinalDamage = RangedDamage();
+		break;
+	case EDamageType::Hazard:
+		FinalDamage = HazardDamage();
+		break;
+	}
 
-	return 0.0f;
+	return FinalDamage;
 }
 
 float UDamageComponent::MeleeDamage()
@@ -51,12 +63,16 @@ float UDamageComponent::MeleeDamage()
 float UDamageComponent::RangedDamage()
 {
 	// this need looked at
+	float RangedDamage = 0;
 
 	return 0.0f;
 }
 
 float UDamageComponent::HazardDamage()
 {
+	float HazardDamage = 0;
+
+	HazardDamage = UKismetMathLibrary::RandomFloatInRange(MinDamageMult * 0.5f, MaxDamageMult * 1.f);
 	// same as this
 	return 0.0f;
 }

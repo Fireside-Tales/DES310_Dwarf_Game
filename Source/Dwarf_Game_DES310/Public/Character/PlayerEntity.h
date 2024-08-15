@@ -12,6 +12,9 @@
 class UPlayerStatsComponent;
 class UCameraComponent;
 class USpringArmComponent;
+class UInputData; 
+class ABaseThrowable;
+
 UCLASS()
 class DWARF_GAME_DES310_API APlayerEntity : public ABaseEntity
 {
@@ -27,11 +30,25 @@ public:
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
 	TObjectPtr<UPlayerStatsComponent> PlayerStatsComponent;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = true))
+	TObjectPtr<UInputData> InputData;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = true))
 	TObjectPtr<UCameraComponent> Camera;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = true))
 	TObjectPtr<USpringArmComponent> SpringArm;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon", meta = (AllowPrivateAccess = true))
-	TObjectPtr<UChildActorComponent> Pickaxe;
+	TObjectPtr<ABaseThrowable> Pickaxe;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon", meta = (AllowPrivateAccess = true))
+	TSubclassOf<ABaseThrowable> PickaxeRef;
+
+#pragma region Functions
+
+	UFUNCTION()
+	void Move(const FInputActionValue& Value);
+	UFUNCTION()
+	void RotateCamera(const FInputActionValue& Value);
+#pragma endregion
+
+
 };
