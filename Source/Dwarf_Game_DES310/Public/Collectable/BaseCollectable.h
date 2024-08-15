@@ -8,7 +8,7 @@
 
 
 class UCapsuleComponent;
-class URotatingMovementComponent;
+class UBounceRotationComponent;
 UCLASS()
 class DWARF_GAME_DES310_API ABaseCollectable : public AActor
 {
@@ -31,5 +31,5 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Collision", meta = (AllowPrivateAccess = true))
 	TObjectPtr<UCapsuleComponent> Collider;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Rotation", meta = (AllowPrivateAccess = true))
-	TObjectPtr<URotatingMovementComponent> Rotator; 
+	TObjectPtr<UBounceRotationComponent> Rotator; 
 };

@@ -3,7 +3,7 @@
 
 #include "Collectable/BaseCollectable.h"
 #include "Components/CapsuleComponent.h"
-#include "GameFramework/RotatingMovementComponent.h"
+#include "Components/BounceRotationComponent.h"
 // Sets default values
 ABaseCollectable::ABaseCollectable()
 {
@@ -16,7 +16,7 @@ ABaseCollectable::ABaseCollectable()
 	Mesh = CreateOptionalDefaultSubobject<UStaticMeshComponent>(FName("Mesh"));
 	Mesh->SetupAttachment(Collider);
 
-	Rotator = CreateOptionalDefaultSubobject<URotatingMovementComponent>(FName("Rotator"));
+	Rotator = CreateOptionalDefaultSubobject<UBounceRotationComponent>(FName("Rotator"));
 	
 }
 
