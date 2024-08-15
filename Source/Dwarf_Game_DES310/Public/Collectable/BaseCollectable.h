@@ -6,12 +6,15 @@
 #include "GameFramework/Actor.h"
 #include "BaseCollectable.generated.h"
 
+
+class UCapsuleComponent;
+class URotatingMovementComponent;
 UCLASS()
 class DWARF_GAME_DES310_API ABaseCollectable : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	ABaseCollectable();
 
@@ -19,8 +22,14 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
+private:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Meshes", meta = (AllowPrivateAccess = true))
+	TObjectPtr<UStaticMeshComponent> Mesh;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Collision", meta = (AllowPrivateAccess = true))
+	TObjectPtr<UCapsuleComponent> Collider;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Rotation", meta = (AllowPrivateAccess = true))
+	TObjectPtr<URotatingMovementComponent> Rotator; 
 };

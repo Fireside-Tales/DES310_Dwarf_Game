@@ -37,27 +37,27 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UProjectileMovementComponent* PickMovement;
+	UProjectileMovementComponent* PickMovement;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-		TEnumAsByte<AxeStates> AxeState = AxeStates::Idle;
+	TEnumAsByte<AxeStates> AxeState = AxeStates::Idle;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UCameraComponent* m_Camera;
+	UCameraComponent* m_Camera;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")
-		UAudioComponent* m_AudioComponent;
+	UAudioComponent* m_AudioComponent;
 
 
 	FVector mv_InitLoc;
 	FVector mv_TargLoc;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Axe Throw Stats")
-		FVector mv_ImpactLoc;
+	FVector mv_ImpactLoc;
 	FVector mv_ImpactNormal;
 	FVector mv_ThrowDir;
 	FVector mv_CameraLoc;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		FVector mv_AxeLocationLastTick;
+	FVector mv_AxeLocationLastTick;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		FVector mv_ReturnTargetLocations;
+	FVector mv_ReturnTargetLocations;
 
 
 	FRotator mr_InitRot;
@@ -71,29 +71,29 @@ public:
 	float mf_DistanceFromChar;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float mf_OptimalDis;
+	float mf_OptimalDis;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float mf_AxeReturnSpeed;
+	float mf_AxeReturnSpeed;
 
 	float mf_AxeReturnScale;
 	float mf_ReturnTilt;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-		float mf_AxeSpin;
+	float mf_AxeSpin;
 
 	float mf_ReturnSpinRate;
 	float mf_ImpulseStrength;
 	float mf_AxeSpinOffset;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-		float mf_SpinLength;
+	float mf_SpinLength;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-		int mi_ReturnSpins;
+	int mi_ReturnSpins;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-		bool mb_isWiggle;
+	bool mb_isWiggle;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-		bool mb_Thrown;
+	bool mb_Thrown;
 
 	FName mn_BoneName;
 
@@ -101,64 +101,64 @@ public:
 
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-		class ABase_Player* playerRef;
+	class ABase_Player* playerRef;
 
 	UFUNCTION(BlueprintCallable)
-		void InitialiseReturnVariables();
+	void InitialiseReturnVariables();
 
 	UFUNCTION(BlueprintCallable)
-		void InitialiseReturnTrace();
+	void InitialiseReturnTrace();
 
 	UFUNCTION(BlueprintCallable)
-		bool LineTraceMethod(FHitResult& OutHit);
+	bool LineTraceMethod(FHitResult& OutHit);
 
 	UFUNCTION(BlueprintCallable)
-		bool InitSphereTrace(FHitResult& OutHit);
+	bool InitSphereTrace(FHitResult& OutHit);
 
 	UFUNCTION(BlueprintCallable)
-		void ThrowAxe();
+	void ThrowAxe();
 	UFUNCTION(BlueprintCallable)
-		void RecallLaunched();
+	void RecallLaunched();
 	UFUNCTION(BlueprintCallable)
-		void LaunchAxe();
+	void LaunchAxe();
 
 	UFUNCTION(BlueprintCallable)
-		void Catch(USceneComponent* newParent);
+	void Catch(USceneComponent* newParent);
 protected:
 	UFUNCTION(BlueprintCallable)
-		void HandleImpact(FVector ImpactNormal, FVector ImpactLocation);
+	void HandleImpact(FVector ImpactNormal, FVector ImpactLocation);
 	UFUNCTION(BlueprintCallable)
-		void LodgeAxe();
+	void LodgeAxe();
 	UFUNCTION(BlueprintCallable)
-		void AdjustAxeReturnLocation();
+	void AdjustAxeReturnLocation();
 	UFUNCTION(BlueprintCallable)
-		void AxeLodgePull(float pull);
+	void AxeLodgePull(float pull);
 	UFUNCTION(BlueprintCallable)
-		void ReturnPosition(float rot1, float rot2, float vectorCurve, float speedCurve, USkeletalMeshComponent* skeleton);
+	void ReturnPosition(float rot1, float rot2, float vectorCurve, float speedCurve, USkeletalMeshComponent* skeleton);
 	UFUNCTION(BlueprintCallable)
-		void ReturnSpin(float TimelineSpeed);
+	void ReturnSpin(float TimelineSpeed);
 	UFUNCTION(BlueprintCallable)
-		void ReturnSpinAfterTime(float newPitch);
+	void ReturnSpinAfterTime(float newPitch);
 	UFUNCTION(BlueprintCallable)
-		float AdjustAxeImpactPitch();
+	float AdjustAxeImpactPitch();
 	UFUNCTION(BlueprintCallable)
-		float GetClampedAxeDistanceFromChar(USkeletalMeshComponent* skeleton);
+	float GetClampedAxeDistanceFromChar(USkeletalMeshComponent* skeleton);
 	UFUNCTION(BlueprintCallable)
-		FVector CalculateImpulseDirection();
+	FVector CalculateImpulseDirection();
 	UFUNCTION(BlueprintCallable)
-		FVector AdjustAxeImpactLocation();
+	FVector AdjustAxeImpactLocation();
 	UFUNCTION(BlueprintCallable)
-		void SnapToStart();
+	void SnapToStart();
 
 
 
 	UFUNCTION(BlueprintCallable)
-		float AdjustAxeReturnTimelineSpeed();
+	float AdjustAxeReturnTimelineSpeed();
 
 	UFUNCTION(BlueprintCallable)
-		void InitVariables(UProjectileMovementComponent* projectileMovement, USceneComponent* pivotPoint, USceneComponent* lodgePoint, UCameraComponent* camera);
+	void InitVariables(UProjectileMovementComponent* projectileMovement, USceneComponent* pivotPoint, USceneComponent* lodgePoint, UCameraComponent* camera);
 
 	UFUNCTION(BlueprintCallable)
-		void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 };

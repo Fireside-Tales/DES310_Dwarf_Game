@@ -2,20 +2,29 @@
 
 
 #include "Collectable/BaseCollectable.h"
-
+#include "Components/CapsuleComponent.h"
+#include "GameFramework/RotatingMovementComponent.h"
 // Sets default values
 ABaseCollectable::ABaseCollectable()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	Collider = CreateOptionalDefaultSubobject<UCapsuleComponent>(FName("Collider"));
+	RootComponent = Collider;
+
+	Mesh = CreateOptionalDefaultSubobject<UStaticMeshComponent>(FName("Mesh"));
+	Mesh->SetupAttachment(Collider);
+
+	Rotator = CreateOptionalDefaultSubobject<URotatingMovementComponent>(FName("Rotator"));
+	
 }
 
 // Called when the game starts or when spawned
 void ABaseCollectable::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame
