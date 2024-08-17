@@ -26,6 +26,9 @@ public:
 
 	void SetSprinting(bool Sprinting) { IsSprinting = Sprinting; }
 
+	UFUNCTION(BlueprintPure)
+	bool GetSprinting() const { return IsSprinting; }
+
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
 	float Stamina;
