@@ -8,7 +8,9 @@
 
 
 class UProjectileMovementComponent;
-
+class UDamageComponent;
+class APlayerEntity;
+class USkeletalMeshComponent;
 UCLASS()
 class DWARF_GAME_DES310_API ABaseThrowable : public AActor
 {
@@ -31,29 +33,103 @@ private:
 	TObjectPtr<USceneComponent> PivotPoint;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components|Pivot", meta = (AllowPrivateAccess = true))
 	TObjectPtr<USceneComponent> LodgePoint;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components|Pivot", meta = (AllowPrivateAccess = true))
+	TObjectPtr <USkeletalMeshComponent>Mesh;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components|Movement", meta = (AllowPrivateAccess = true))
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovement;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components|Audio", meta = (AllowPrivateAccess = true))
 	TObjectPtr<UAudioComponent> AudioComponent;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components|Audio", meta = (AllowPrivateAccess = true))
+	TObjectPtr<UDamageComponent> DamageComponent;
 #pragma endregion
 
 #pragma region Variables
+	TObjectPtr<APlayerEntity> PlayerRef;
+
 	FVector InitLoc;
 	FVector TargLoc;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Throw Stats",meta = (AllowPrivateAccess = true))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Throw Stats|Positions", meta = (AllowPrivateAccess = true))
 	FVector ImpactLoc;
 	FVector ImpactNormal;
 	FVector ThrowDir;
 	FVector CameraLoc;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Throw Stats",meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Throw Stats|Positions", meta = (AllowPrivateAccess = true))
 	FVector AxeLocationLastTick;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Throw Stats",meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Throw Stats|Positions", meta = (AllowPrivateAccess = true))
 	FVector ReturnTargetLocations;
+
+	FRotator InitRot;
+	FRotator CameraRot;
+	FRotator LodgePointRot;
+
+	float AxeThrowSpeed;
+	float ThrowTraceDis = 60;
+	float Z_Adjustment;
+	float MaxDistance;
+	float DistanceFromChar;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Throw Stats|Distance", meta = (AllowPrivateAccess = true))
+	float OptimalDis;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Throw Stats|Speed", meta = (AllowPrivateAccess = true))
+	float AxeReturnSpeed;
+
+	float AxeReturnScale;
+	float ReturnTilt;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Throw Stats|Distance", meta = (AllowPrivateAccess = true))
+	float AxeSpin;
+
+	float ReturnSpinRate;
+	float ImpulseStrength;
+	float AxeSpinOffset;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Throw Stats|Distance", meta = (AllowPrivateAccess = true))
+	float SpinLength;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Throw Stats|Distance", meta = (AllowPrivateAccess = true))
+	int ReturnSpins;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Throw Stats|Distance", meta = (AllowPrivateAccess = true))
+	bool isWiggle;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Throw Stats|Distance", meta = (AllowPrivateAccess = true))
+	bool isThrown;
+
+	FName BoneName;
 
 #pragma endregion
 
 #pragma region Functions
 	UFUNCTION()
 	void OnOverLapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	void InitialiseReturnVariables();
+	void InitialiseReturnTrace();
+
+
+	bool LineTraceMethod(FHitResult& OutHit);
+	bool InitSphereTrace(FHitResult& OutHit);
+
+	void ThrowAxe();
+	void RecallLaunched();
+	void LaunchAxe();
+	void Catch(USceneComponent* newParent);
+
+	void HandleImpact(FVector ImpactNormal, FVector ImpactLocation);
+	void LodgeAxe();
+	void AdjustAxeReturnLocation();
+	void AxeLodgePull(float pull);
+	void ReturnPosition(float rot1, float rot2, float vectorCurve, float speedCurve, USkeletalMeshComponent* skeleton);
+	void ReturnSpin(float TimelineSpeed);
+	void ReturnSpinAfterTime(float newPitch);
+	float GetClampedAxeDistanceFromChar(USkeletalMeshComponent* skeleton);
+	FVector CalculateImpulseDirection();
+	FVector AdjustAxeImpactLocation();
+	void SnapToStart();
+	float AdjustAxeReturnTimelineSpeed();
+
+
+#pragma endregion
 };

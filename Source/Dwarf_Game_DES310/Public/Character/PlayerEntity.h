@@ -27,6 +27,8 @@ protected:
 public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UCameraComponent* GetCamera() { return Camera;  }
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
 	TObjectPtr<UPlayerStatsComponent> PlayerStatsComponent;
