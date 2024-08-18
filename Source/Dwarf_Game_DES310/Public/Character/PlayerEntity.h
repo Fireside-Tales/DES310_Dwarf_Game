@@ -12,7 +12,7 @@
 class UPlayerStatsComponent;
 class UCameraComponent;
 class USpringArmComponent;
-class UInputData; 
+class UInputData;
 class ABaseThrowable;
 
 UCLASS()
@@ -24,11 +24,15 @@ public:
 	APlayerEntity();
 protected:
 	virtual void BeginPlay() override;
+	UFUNCTION(BlueprintImplementableEvent)
+	void LerpCamera();
+	UFUNCTION(BlueprintCallable)
+	void LerpCameraAlpha(float Alpha);
 public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	UCameraComponent* GetCamera() { return Camera;  }
+	UCameraComponent* GetCamera() { return Camera; }
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
 	TObjectPtr<UPlayerStatsComponent> PlayerStatsComponent;
@@ -50,7 +54,33 @@ private:
 	void Move(const FInputActionValue& Value);
 	UFUNCTION()
 	void RotateCamera(const FInputActionValue& Value);
+
+	UFUNCTION()
+	void Aim();
+	UFUNCTION()
+	void ReleaseAim();
+
+
+	UFUNCTION()
+	void ThrowAxe();
+
 #pragma endregion
 
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = true))
+	bool isAiming;
+
+	bool isDashing;
+
+
+	float IdleLength; float AimLength;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera", meta = (AllowPrivateAccess = true))
+	FVector IdleVec;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera", meta = (AllowPrivateAccess = true))
+	FVector AimVec;
+
+	FVector desiredSocketOffset;
 
 };

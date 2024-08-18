@@ -27,7 +27,6 @@ void UDamageComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-
 }
 
 float UDamageComponent::CalculateDamage()
