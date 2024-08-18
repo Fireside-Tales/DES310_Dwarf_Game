@@ -4,10 +4,9 @@
 #include "Character/PlayerEntity.h"
 #include "Components/PlayerStatsComponent.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/CapsuleComponent.h"
-
-
 #include "Components/InputComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -16,6 +15,7 @@
 #include "Input/InputData.h"
 
 #include "Weapons/BaseThrowable.h"
+#include <Kismet/KismetMathLibrary.h>
 
 APlayerEntity::APlayerEntity() :ABaseEntity()
 {
@@ -33,6 +33,9 @@ APlayerEntity::APlayerEntity() :ABaseEntity()
 	//Pickaxe->SetupAttachment(GetMesh());
 
 	PlayerStatsComponent = CreateOptionalDefaultSubobject<UPlayerStatsComponent>(TEXT("PlayerStatsComponent"));
+
+	IdleLength = 125.f; // starting length of the camera
+	AimLength = 100.f;  // aim length for the camera
 }
 
 void APlayerEntity::BeginPlay()
@@ -43,6 +46,16 @@ void APlayerEntity::BeginPlay()
 		Pickaxe = GetWorld()->SpawnActor<ABaseThrowable>(PickaxeRef, GetActorLocation(), GetActorRotation());
 		Pickaxe->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, "PickaxeSocket");
 	}
+}
+
+void APlayerEntity::LerpCameraAlpha(float Alpha)
+{
+	float armLength = UKismetMathLibrary::Lerp(IdleLength, AimLength, Alpha);
+	FVector cameraPos = FMath::Lerp(IdleVec, AimVec, Alpha);
+
+	SpringArm->TargetArmLength = armLength;
+	desiredSocketOffset = cameraPos;
+	SpringArm->SocketOffset = cameraPos;
 }
 
 void APlayerEntity::Tick(float DeltaTime)
@@ -65,6 +78,7 @@ void APlayerEntity::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 					InputSystem->ClearAllMappings(); // Clear all mappings
 					// Loop through all contexts
 					InputSystem->AddMappingContext(InputData->Contexts[0], 0); // Add the context to the input system
+					InputSystem->AddMappingContext(InputData->Contexts[1], 0); // Add the context to the input system
 				}
 			}
 
@@ -73,6 +87,9 @@ void APlayerEntity::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 		{
 			PEI->BindAction(InputData->MovementActions[0], ETriggerEvent::Triggered, this, &APlayerEntity::Move);
 			PEI->BindAction(InputData->MovementActions[1], ETriggerEvent::Triggered, this, &APlayerEntity::RotateCamera);
+
+			PEI->BindAction(InputData->AttackActions[0], ETriggerEvent::Started, this, &APlayerEntity::Aim); 
+			PEI->BindAction(InputData->AttackActions[0], ETriggerEvent::Completed, this, &APlayerEntity::ReleaseAim); 
 		}
 	}
 }
@@ -96,4 +113,30 @@ void APlayerEntity::RotateCamera(const FInputActionValue& Value)
 		AddControllerYawInput(Rotate.X);
 	}
 
+}
+
+void APlayerEntity::Aim()
+{
+	isAiming = true;
+	isDashing = false;
+	GetCharacterMovement()->MaxWalkSpeed = 250.f;
+	LerpCamera(); 
+}
+
+void APlayerEntity::ReleaseAim()
+{
+	isAiming = false; 
+	GetCharacterMovement()->MaxWalkSpeed = 600.f; 
+	LerpCamera(); 
+}
+
+void APlayerEntity::ThrowAxe()
+{
+	if(isAiming)
+	{
+		if(IsValid(PickaxeRef))	
+		{
+
+		}
+	}
 }

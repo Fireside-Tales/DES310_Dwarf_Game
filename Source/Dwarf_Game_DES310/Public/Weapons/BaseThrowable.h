@@ -11,6 +11,15 @@ class UProjectileMovementComponent;
 class UDamageComponent;
 class APlayerEntity;
 class USkeletalMeshComponent;
+
+UENUM()
+enum class EAxeStates : uint8
+{
+	Idle		UMETA(DisplayName = "Idle"),
+	Launched	UMETA(DisplayName = "Launched"),
+	Lodged		UMETA(DisplayName = "Lodged"),
+	Returning	UMETA(DisplayName = "Returning"),
+};
 UCLASS()
 class DWARF_GAME_DES310_API ABaseThrowable : public AActor
 {
@@ -46,6 +55,7 @@ private:
 
 #pragma region Variables
 	TObjectPtr<APlayerEntity> PlayerRef;
+	EAxeStates AxeState = EAxeStates::Idle;
 
 	FVector InitLoc;
 	FVector TargLoc;
@@ -129,6 +139,7 @@ private:
 	FVector AdjustAxeImpactLocation();
 	void SnapToStart();
 	float AdjustAxeReturnTimelineSpeed();
+	float AdjustAxeImpactPitch();
 
 
 #pragma endregion
