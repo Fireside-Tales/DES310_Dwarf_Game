@@ -9,6 +9,7 @@
 
 class UCapsuleComponent;
 class UBounceRotationComponent;
+class UNiagaraComponent;
 UCLASS()
 class DWARF_GAME_DES310_API ABaseCollectable : public AActor
 {
@@ -32,4 +33,7 @@ private:
 	TObjectPtr<UCapsuleComponent> Collider;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Rotation", meta = (AllowPrivateAccess = true))
 	TObjectPtr<UBounceRotationComponent> Rotator; 
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Particles", meta = (AllowPrivateAccess = true))
+	TObjectPtr<UNiagaraComponent> CollectParticles;
 };

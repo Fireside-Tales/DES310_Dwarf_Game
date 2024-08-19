@@ -4,6 +4,7 @@
 #include "Collectable/BaseCollectable.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/BounceRotationComponent.h"
+#include "NiagaraComponent.h"
 // Sets default values
 ABaseCollectable::ABaseCollectable()
 {
@@ -17,7 +18,9 @@ ABaseCollectable::ABaseCollectable()
 	Mesh->SetupAttachment(Collider);
 
 	Rotator = CreateOptionalDefaultSubobject<UBounceRotationComponent>(FName("Rotator"));
-	
+	CollectParticles = CreateOptionalDefaultSubobject<UNiagaraComponent>(FName("CollectParticles"));
+	CollectParticles->SetupAttachment(Collider);
+
 }
 
 // Called when the game starts or when spawned
