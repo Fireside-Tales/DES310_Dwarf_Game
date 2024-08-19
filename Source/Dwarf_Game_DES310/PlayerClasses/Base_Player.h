@@ -195,15 +195,15 @@ public:
 		FPlayerStats m_PlayerStats;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Playerstates)
-		TEnumAsByte <PlayerStates> m_PlayerStates;
+		PlayerStates m_PlayerStates;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Playerstates)
-		TEnumAsByte<PlayerAttacks> m_CurrentAttack;
+		PlayerAttacks m_CurrentAttack;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Playerstates)
 		bool mb_AttackFinished;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Playerstates)
-		TEnumAsByte <PlayerEmotes> m_PlayerEmotes;
+		PlayerEmotes m_PlayerEmotes;
 
-	TQueue<TEnumAsByte<PlayerAttacks>> m_NextAttack;
+	TQueue<PlayerAttacks> m_NextAttack;
 
 
 	UFUNCTION(BlueprintCallable, Category = "Player Skeleton")

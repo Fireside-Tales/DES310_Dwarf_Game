@@ -8,7 +8,7 @@
 #include "Base_Collectable.generated.h"
 
 UENUM(BlueprintType)
-enum CollectibleType
+enum class CollectibleType : uint8
 {
 	MaxHealth = 0,
 	MoveSpeed,
@@ -56,7 +56,7 @@ public:
 		float mf_CollectValue;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Type)
-		TEnumAsByte<CollectibleType> m_CollectibleType;
+		CollectibleType m_CollectibleType;
 
 
 };

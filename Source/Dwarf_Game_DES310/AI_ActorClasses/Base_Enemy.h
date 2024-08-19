@@ -27,7 +27,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-		TEnumAsByte <EnemyStates> m_EnemyStates;
+		EnemyStates m_EnemyStates;
 
 public: 
 	virtual void Tick(float DeltaTime) override;

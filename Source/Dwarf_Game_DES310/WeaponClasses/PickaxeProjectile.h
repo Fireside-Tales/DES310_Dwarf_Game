@@ -39,7 +39,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UProjectileMovementComponent* PickMovement;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	TEnumAsByte<AxeStates> AxeState = AxeStates::Idle;
+	AxeStates AxeState = AxeStates::Idle;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UCameraComponent* m_Camera;

@@ -200,7 +200,7 @@ float APickaxeProjectile::AdjustAxeImpactPitch()
 	{
 		return InclineSurface - rot.Pitch;
 	}
-	return 0.0f;
+	//return 0.0f;
 }
 
 float APickaxeProjectile::GetClampedAxeDistanceFromChar(USkeletalMeshComponent* skeleton)

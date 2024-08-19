@@ -7,8 +7,9 @@ public class Dwarf_Game_DES310EditorTarget : TargetRules
 {
 	public Dwarf_Game_DES310EditorTarget(TargetInfo Target) : base(Target)
 	{
-		Type = TargetType.Editor;
-		DefaultBuildSettings = BuildSettingsVersion.V2;
-		ExtraModuleNames.Add("Dwarf_Game_DES310");
+        Type = TargetType.Editor;
+        DefaultBuildSettings = BuildSettingsVersion.V5;
+        IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_4;
+        ExtraModuleNames.Add("Dwarf_Game_DES310");
 	}
 }

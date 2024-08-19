@@ -7,8 +7,9 @@ public class Dwarf_Game_DES310Target : TargetRules
 {
 	public Dwarf_Game_DES310Target(TargetInfo Target) : base(Target)
 	{
-		Type = TargetType.Game;
-		DefaultBuildSettings = BuildSettingsVersion.V2;
-		ExtraModuleNames.Add("Dwarf_Game_DES310");
+        Type = TargetType.Game;
+        DefaultBuildSettings = BuildSettingsVersion.Latest;
+        IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
+        ExtraModuleNames.Add("Dwarf_Game_DES310");
 	}
 }
