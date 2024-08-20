@@ -5,6 +5,8 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/BounceRotationComponent.h"
 #include "NiagaraComponent.h"
+
+#include "Character/PlayerEntity.h"
 // Sets default values
 ABaseCollectable::ABaseCollectable()
 {
@@ -35,5 +37,19 @@ void ABaseCollectable::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void ABaseCollectable::Collect()
+{
+
+}
+
+void ABaseCollectable::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	APlayerEntity* player = Cast<APlayerEntity>(OtherActor);
+	if (player)
+	{
+		Collect();
+	}
 }
 

@@ -16,7 +16,8 @@ public class Dwarf_Game_DES310 : ModuleRules
             "Engine",
             "InputCore",
             "Niagara",
-            "EnhancedInput"
+            "EnhancedInput",
+            "UMG"
         });
     }
 
