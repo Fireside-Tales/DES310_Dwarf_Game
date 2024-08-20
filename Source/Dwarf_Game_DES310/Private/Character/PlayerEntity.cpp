@@ -34,6 +34,8 @@ APlayerEntity::APlayerEntity() :ABaseEntity()
 
 	PlayerStatsComponent = CreateOptionalDefaultSubobject<UPlayerStatsComponent>(TEXT("PlayerStatsComponent"));
 
+
+
 	IdleLength = 125.f; // starting length of the camera
 	AimLength = 100.f;  // aim length for the camera
 }
@@ -44,7 +46,8 @@ void APlayerEntity::BeginPlay()
 	if (PickaxeRef)
 	{
 		Pickaxe = GetWorld()->SpawnActor<ABaseThrowable>(PickaxeRef, GetActorLocation(), GetActorRotation());
-		Pickaxe->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, "PickaxeSocket");
+		FAttachmentTransformRules* rules = new FAttachmentTransformRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld,true);
+		Pickaxe->AttachToComponent(GetMesh(),*rules, "PickaxeSocket");
 	}
 }
 
@@ -88,8 +91,8 @@ void APlayerEntity::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 			PEI->BindAction(InputData->MovementActions[0], ETriggerEvent::Triggered, this, &APlayerEntity::Move);
 			PEI->BindAction(InputData->MovementActions[1], ETriggerEvent::Triggered, this, &APlayerEntity::RotateCamera);
 
-			PEI->BindAction(InputData->AttackActions[0], ETriggerEvent::Started, this, &APlayerEntity::Aim); 
-			PEI->BindAction(InputData->AttackActions[0], ETriggerEvent::Completed, this, &APlayerEntity::ReleaseAim); 
+			PEI->BindAction(InputData->AttackActions[0], ETriggerEvent::Started, this, &APlayerEntity::Aim);
+			PEI->BindAction(InputData->AttackActions[0], ETriggerEvent::Completed, this, &APlayerEntity::ReleaseAim);
 		}
 	}
 }
@@ -120,21 +123,21 @@ void APlayerEntity::Aim()
 	isAiming = true;
 	isDashing = false;
 	GetCharacterMovement()->MaxWalkSpeed = 250.f;
-	LerpCamera(); 
+	LerpCamera();
 }
 
 void APlayerEntity::ReleaseAim()
 {
-	isAiming = false; 
-	GetCharacterMovement()->MaxWalkSpeed = 600.f; 
-	LerpCamera(); 
+	isAiming = false;
+	GetCharacterMovement()->MaxWalkSpeed = 600.f;
+	LerpCamera();
 }
 
 void APlayerEntity::ThrowAxe()
 {
-	if(isAiming)
+	if (isAiming)
 	{
-		if(IsValid(PickaxeRef))	
+		if (IsValid(PickaxeRef))
 		{
 
 		}
