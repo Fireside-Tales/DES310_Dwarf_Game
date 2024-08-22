@@ -33,9 +33,20 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void StartAxeSpin();
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void StopAxeSpin();
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void StopAxeMovement(); 
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	bool GetIsThrown() { return isThrown; }
+
+	void SetPlayerRef(APlayerEntity* newPlayer) { PlayerRef = newPlayer; }
 private:
 #pragma region Components
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components|Pivot", meta = (AllowPrivateAccess = true))
@@ -74,6 +85,7 @@ private:
 	FRotator CameraRot;
 	FRotator LodgePointRot;
 
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,  Category = "Throw Stats|Speed", meta = (AllowPrivateAccess = true))
 	float AxeThrowSpeed;
 	float ThrowTraceDis = 60;
 	float Z_Adjustment;
@@ -122,16 +134,19 @@ private:
 	bool LineTraceMethod(FHitResult& OutHit);
 	bool InitSphereTrace(FHitResult& OutHit);
 
+	UFUNCTION(BlueprintCallable)
 	void ThrowAxe();
 	void RecallLaunched();
 	void LaunchAxe();
 	void Catch(USceneComponent* newParent);
+
 
 	void HandleImpact(FVector ImpactNormal, FVector ImpactLocation);
 	void LodgeAxe();
 	void AdjustAxeReturnLocation();
 	void AxeLodgePull(float pull);
 	void ReturnPosition(float rot1, float rot2, float vectorCurve, float speedCurve, USkeletalMeshComponent* skeleton);
+	UFUNCTION(BlueprintCallable)
 	void ReturnSpin(float TimelineSpeed);
 	void ReturnSpinAfterTime(float newPitch);
 	float GetClampedAxeDistanceFromChar(USkeletalMeshComponent* skeleton);
@@ -140,6 +155,8 @@ private:
 	void SnapToStart();
 	float AdjustAxeReturnTimelineSpeed();
 	float AdjustAxeImpactPitch();
+
+
 
 
 #pragma endregion

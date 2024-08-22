@@ -46,8 +46,9 @@ void APlayerEntity::BeginPlay()
 	if (PickaxeRef)
 	{
 		Pickaxe = GetWorld()->SpawnActor<ABaseThrowable>(PickaxeRef, GetActorLocation(), GetActorRotation());
-		FAttachmentTransformRules* rules = new FAttachmentTransformRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld,true);
-		Pickaxe->AttachToComponent(GetMesh(),*rules, "PickaxeSocket");
+		FAttachmentTransformRules* rules = new FAttachmentTransformRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, true);
+		Pickaxe->AttachToComponent(GetMesh(), *rules, "PickaxeSocket");
+		Pickaxe->SetPlayerRef(this); 
 	}
 }
 
@@ -93,6 +94,7 @@ void APlayerEntity::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 			PEI->BindAction(InputData->AttackActions[0], ETriggerEvent::Started, this, &APlayerEntity::Aim);
 			PEI->BindAction(InputData->AttackActions[0], ETriggerEvent::Completed, this, &APlayerEntity::ReleaseAim);
+			PEI->BindAction(InputData->AttackActions[1], ETriggerEvent::Started, this, &APlayerEntity::ThrowAxe);
 		}
 	}
 }
@@ -137,9 +139,12 @@ void APlayerEntity::ThrowAxe()
 {
 	if (isAiming)
 	{
-		if (IsValid(PickaxeRef))
+		if (IsValid(Pickaxe))
 		{
-
+			if (Pickaxe->GetIsThrown() == false)
+			{
+				isThrowing = true;
+			}
 		}
 	}
 }

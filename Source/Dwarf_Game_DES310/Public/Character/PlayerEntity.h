@@ -28,11 +28,13 @@ protected:
 	void LerpCamera();
 	UFUNCTION(BlueprintCallable)
 	void LerpCameraAlpha(float Alpha);
+
+
 public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	UCameraComponent* GetCamera() { return Camera; }
+	TObjectPtr<UCameraComponent> GetCamera() { return Camera; }
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
 	TObjectPtr<UPlayerStatsComponent> PlayerStatsComponent;
@@ -64,12 +66,17 @@ private:
 	UFUNCTION()
 	void ThrowAxe();
 
+
+
 #pragma endregion
 
-	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = true))
+	UPROPERTY(BlueprintReadOnly, Category = "Axe Stats", meta = (AllowPrivateAccess = true))
 	bool isAiming;
+	UPROPERTY(BlueprintReadWrite, Category = "Axe Stats", meta = (AllowPrivateAccess = true))
+	bool isThrowing;
 
 	bool isDashing;
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera", meta = (AllowPrivateAccess = true))
 

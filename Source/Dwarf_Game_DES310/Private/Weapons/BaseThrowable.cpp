@@ -114,6 +114,7 @@ void ABaseThrowable::ThrowAxe()
 	isThrown = true;
 	SnapToStart();
 	LaunchAxe();
+	StartAxeSpin();
 }
 
 void ABaseThrowable::RecallLaunched()
@@ -125,6 +126,7 @@ void ABaseThrowable::LaunchAxe()
 {
 	if (ProjectileMovement)
 	{
+		this->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform); 
 		ProjectileMovement->Velocity = ThrowDir * AxeThrowSpeed;
 		ProjectileMovement->Activate();
 		AxeState = EAxeStates::Launched;

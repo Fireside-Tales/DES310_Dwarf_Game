@@ -19,18 +19,18 @@ struct FPlayerStats
 {
 	GENERATED_BODY()
 
-		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
-		bool isAlive = true;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
-		float mf_MaxHealth;
+	bool isAlive = true;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
-		float mf_MaxStamina;
+	float mf_MaxHealth;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
-		float mf_BaseMovespeed;
+	float mf_MaxStamina;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
-		float mf_BaseStrength;
+	float mf_BaseMovespeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
-		float mf_BaseSwingSpeed;
+	float mf_BaseStrength;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
+	float mf_BaseSwingSpeed;
 
 	float mf_Health;
 	float mf_Movespeed;
@@ -96,17 +96,17 @@ protected:
 	bool mb_UseContRotation;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Axe Throw")
-		bool mb_Aiming;
+	bool mb_Aiming;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Axe Throw")
-		class APickaxeProjectile* m_AxeRef;
+	class APickaxeProjectile* m_AxeRef;
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
-		FVector mv_CameraVec;
+	FVector mv_CameraVec;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
-		FVector mv_RangedCameraVec;
+	FVector mv_RangedCameraVec;
 	FVector mv_desiredSocketOffset;
 
 	float mf_CameraTurnRate;
@@ -115,29 +115,29 @@ protected:
 	float mf_SpringAimLength;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-		bool mb_isDashing;
+	bool mb_isDashing;
 	float mf_StaminaRegen;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Timer")
-		float mf_StaminaTarget;
+	float mf_StaminaTarget;
 
 
 
 
 	UFUNCTION(BlueprintCallable, Category = "Axe Throw")
-		void Aim();
+	void Aim();
 	UFUNCTION(BlueprintCallable, Category = "Axe Throw")
-		void ReleaseAim();
+	void ReleaseAim();
 	UFUNCTION(BlueprintCallable, Category = "Axe Throw")
-		void ThrowAxe();
+	void ThrowAxe();
 	UFUNCTION(BlueprintCallable, Category = "Axe Throw")
-		void SetSocketOffset(float input);
+	void SetSocketOffset(float input);
 	UFUNCTION(BlueprintCallable, Category = "Axe Throw")
-		void LerpCamera(float alpha);
+	void LerpCamera(float alpha);
 
 	UFUNCTION(BlueprintCallable, Category = "Player States")
-		void HandlePlayerStates();
+	void HandlePlayerStates();
 	UFUNCTION(BlueprintCallable, Category = "Player Stats")
-		void HandlePlayerStats();
+	void HandlePlayerStats();
 
 
 	void ThrowInput();
@@ -170,10 +170,10 @@ protected:
 	void InitialiseCamera();
 
 	void EnableDash();
-	void DisableDash(); 
+	void DisableDash();
 
 	UFUNCTION(BlueprintCallable)
-		void PlayerDash(float delta);
+	void PlayerDash(float delta);
 
 public:
 	// Called every frame
@@ -185,70 +185,70 @@ public:
 	void StealHeirloom();
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Camera)
-		USpringArmComponent* SpringArmcomp;
+	USpringArmComponent* SpringArmcomp;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Camera)
-		UCameraComponent* camera;
+	UCameraComponent* camera;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-		UChildActorComponent* m_Pickaxe;
+	UChildActorComponent* m_Pickaxe;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Playerstats)
-		FPlayerStats m_PlayerStats;
+	FPlayerStats m_PlayerStats;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Playerstates)
-		PlayerStates m_PlayerStates;
+	PlayerStates m_PlayerStates;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Playerstates)
-		PlayerAttacks m_CurrentAttack;
+	PlayerAttacks m_CurrentAttack;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Playerstates)
-		bool mb_AttackFinished;
+	bool mb_AttackFinished;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Playerstates)
-		PlayerEmotes m_PlayerEmotes;
+	PlayerEmotes m_PlayerEmotes;
 
 	TQueue<PlayerAttacks> m_NextAttack;
 
 
 	UFUNCTION(BlueprintCallable, Category = "Player Skeleton")
-		USkeletalMeshComponent* GetSkeleton()
+	USkeletalMeshComponent* GetSkeleton()
 	{
 		return GetMesh();
 	}
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pivots)
-		USceneComponent* m_PlayerHeirloomPivot;
+	USceneComponent* m_PlayerHeirloomPivot;
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		bool mb_IsPlayerInRange;
+	bool mb_IsPlayerInRange;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		bool mb_HasHeirloom;
+	bool mb_HasHeirloom;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		AHeirloom_Class* m_heirloom;
+	AHeirloom_Class* m_heirloom;
 
 	UFUNCTION(BlueprintCallable)
-		void ReduceHealth(float h)
+	void ReduceHealth(float h)
 	{
 		m_PlayerStats.mf_Health -= h;
 	}
 	UFUNCTION(BlueprintCallable)
-		float GetStaminaPercentage()
+	float GetStaminaPercentage()
 	{
 		return m_PlayerStats.mf_Stamina / m_PlayerStats.mf_MaxStamina;
 	}
 	UFUNCTION(BlueprintCallable)
-		float GetHealthPercentage()
+	float GetHealthPercentage()
 	{
 		return m_PlayerStats.mf_Health / m_PlayerStats.mf_MaxHealth;
 	}
 
 	UFUNCTION(BlueprintCallable)
-		void DamagePlayer(float damage)
+	void DamagePlayer(float damage)
 	{
 		m_PlayerStats.mf_Health -= damage;
 	}
 	UFUNCTION(BlueprintCallable)
-		void RespawnPlayer()
+	void RespawnPlayer()
 	{
 		m_PlayerStats.mf_Health = m_PlayerStats.mf_MaxHealth;
 		m_PlayerStats.isAlive = true;
