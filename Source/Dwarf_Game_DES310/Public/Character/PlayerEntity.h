@@ -35,6 +35,10 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	TObjectPtr<UCameraComponent> GetCamera() { return Camera; }
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void DashFOV();
+
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
 	TObjectPtr<UPlayerStatsComponent> PlayerStatsComponent;
@@ -71,7 +75,12 @@ private:
 	UFUNCTION(BlueprintCallable)
 	void Recall();
 
+	UFUNCTION()
+	void StartDash();
+	UFUNCTION()
+	void StopDash();
 
+	
 
 #pragma endregion
 
@@ -79,9 +88,6 @@ private:
 	bool isAiming;
 	UPROPERTY(BlueprintReadWrite, Category = "Axe Stats", meta = (AllowPrivateAccess = true))
 	bool isThrowing;
-
-	bool isDashing;
-
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera", meta = (AllowPrivateAccess = true))
 

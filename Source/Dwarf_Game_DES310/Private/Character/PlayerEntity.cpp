@@ -65,7 +65,11 @@ void APlayerEntity::LerpCameraAlpha(float Alpha)
 void APlayerEntity::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	DashFOV();
+	if(PlayerStatsComponent->GetSprinting() == false)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 600.f;
+	}
 }
 
 void APlayerEntity::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -91,6 +95,9 @@ void APlayerEntity::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 		{
 			PEI->BindAction(InputData->MovementActions[0], ETriggerEvent::Triggered, this, &APlayerEntity::Move);
 			PEI->BindAction(InputData->MovementActions[1], ETriggerEvent::Triggered, this, &APlayerEntity::RotateCamera);
+
+			PEI->BindAction(InputData->MovementActions[2], ETriggerEvent::Started, this, &APlayerEntity::StartDash); 
+			PEI->BindAction(InputData->MovementActions[2], ETriggerEvent::Completed, this, &APlayerEntity::StopDash);
 
 			PEI->BindAction(InputData->AttackActions[0], ETriggerEvent::Started, this, &APlayerEntity::Aim);
 			PEI->BindAction(InputData->AttackActions[0], ETriggerEvent::Completed, this, &APlayerEntity::ReleaseAim);
@@ -124,7 +131,7 @@ void APlayerEntity::RotateCamera(const FInputActionValue& Value)
 void APlayerEntity::Aim()
 {
 	isAiming = true;
-	isDashing = false;
+	PlayerStatsComponent->SetSprinting(false);
 	GetCharacterMovement()->MaxWalkSpeed = 250.f;
 	LerpCamera();
 }
@@ -164,4 +171,19 @@ void APlayerEntity::Recall()
 	{
 		Pickaxe->Recall();
 	}
+}
+
+void APlayerEntity::StartDash()
+{
+	if(PlayerStatsComponent->GetStamina() > 0 && isAiming == false)
+	{
+		PlayerStatsComponent->SetSprinting(true);
+		GetCharacterMovement()->MaxWalkSpeed = 1000.f;
+	}
+}
+
+void APlayerEntity::StopDash()
+{
+	PlayerStatsComponent->SetSprinting(false);
+	GetCharacterMovement()->MaxWalkSpeed = 600.f;
 }
