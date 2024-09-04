@@ -10,6 +10,7 @@
 #include "Components/AudioComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Components/DamageComponent.h"
 
 // Sets default values
 ABaseThrowable::ABaseThrowable()
@@ -37,6 +38,31 @@ ABaseThrowable::ABaseThrowable()
 	AxeReturnScale = 1.f;
 	ReturnTilt = 60.f;
 	ReturnSpinRate = 0.35f;
+}
+
+void ABaseThrowable::Recall()
+{
+	if (AxeState != EAxeStates::Idle)
+	{
+		StopTrace();
+
+		switch (AxeState)
+		{
+		case EAxeStates::Launched:
+			RecallLaunched();
+			break;
+		case EAxeStates::Lodged:
+			break;
+		default:
+			break;
+		}
+		AxeState = EAxeStates::Returning;
+		InitialiseReturnTrace();
+		RecallEvent();
+
+		//InitialiseReturnVariables();
+	}
+
 }
 
 // Called when the game starts or when spawned
@@ -70,14 +96,16 @@ void ABaseThrowable::InitialiseReturnVariables()
 	InitRot = GetActorRotation();
 	CameraRot = PlayerRef->GetCamera()->GetComponentRotation();
 	LodgePoint->SetRelativeRotation(FRotator::ZeroRotator);
+
 }
 
 void ABaseThrowable::InitialiseReturnTrace()
 {
 	AxeLocationLastTick = ReturnTargetLocations;
+	StartReturnTrace();
 }
 
-bool ABaseThrowable::LineTraceMethod(FHitResult& OutHit)
+bool ABaseThrowable::LineTrace(FHitResult& OutHit)
 {
 	FVector Start = GetActorLocation();
 	FVector End = GetVelocity();
@@ -94,7 +122,7 @@ bool ABaseThrowable::LineTraceMethod(FHitResult& OutHit)
 	return GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_Visibility, params);
 }
 
-bool ABaseThrowable::InitSphereTrace(FHitResult& OutHit)
+bool ABaseThrowable::InitSphere(FHitResult& OutHit)
 {
 	FVector Start = ReturnTargetLocations;
 	FVector End = AxeLocationLastTick;
@@ -103,7 +131,7 @@ bool ABaseThrowable::InitSphereTrace(FHitResult& OutHit)
 	ignoreActors.Add(this);
 	ignoreActors.Add(PlayerRef);
 
-	return UKismetSystemLibrary::SphereTraceSingle(GetWorld(), Start, End, 5.0f, ETraceTypeQuery::TraceTypeQuery1, false, ignoreActors, EDrawDebugTrace::None, OutHit, true);
+	return UKismetSystemLibrary::SphereTraceSingle(GetWorld(), Start, End, 5.0f, ETraceTypeQuery::TraceTypeQuery1, false, ignoreActors, EDrawDebugTrace::None, OutHit, true, FColor::Red, FLinearColor::Green, 5.0f);
 }
 
 void ABaseThrowable::ThrowAxe()
@@ -115,6 +143,7 @@ void ABaseThrowable::ThrowAxe()
 	SnapToStart();
 	LaunchAxe();
 	StartAxeSpin();
+	LineTraceTimeline();
 }
 
 void ABaseThrowable::RecallLaunched()
@@ -126,7 +155,7 @@ void ABaseThrowable::LaunchAxe()
 {
 	if (ProjectileMovement)
 	{
-		this->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform); 
+		this->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 		ProjectileMovement->Velocity = ThrowDir * AxeThrowSpeed;
 		ProjectileMovement->Activate();
 		AxeState = EAxeStates::Launched;
@@ -136,8 +165,9 @@ void ABaseThrowable::LaunchAxe()
 
 void ABaseThrowable::Catch(USceneComponent* newParent)
 {
+	//StopReturnSpin();
 	FAttachmentTransformRules attachRules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, true); // tells the axe how to attach back to the player. 
-	AttachToComponent(newParent, attachRules, "HandSocket");
+	AttachToComponent(newParent, attachRules, "WeaponSocket");
 	isThrown = false;
 	AxeState = EAxeStates::Idle;
 }
@@ -172,10 +202,11 @@ void ABaseThrowable::AxeLodgePull(float pull)
 void ABaseThrowable::ReturnPosition(float rot1, float rot2, float vectorCurve, float speedCurve, USkeletalMeshComponent* skeleton)
 {
 	float newScalar = vectorCurve * (DistanceFromChar / AxeReturnScale);
-	FVector socketLocation = skeleton->GetSocketLocation("HandSocket"); // gets the location of where the axe should be lodged into the model
-	FRotator socketRotation = skeleton->GetSocketRotation("HandSocket");
+	FVector socketLocation = skeleton->GetSocketLocation("WeaponSocket"); // gets the location of where the axe should be lodged into the model
+	FRotator socketRotation = skeleton->GetSocketRotation("WeaponSocket");
 
-	ReturnTargetLocations = UKismetMathLibrary::VLerp(InitLoc, PlayerRef->GetCamera()->GetRightVector() + socketLocation, speedCurve);
+
+	ReturnTargetLocations = UKismetMathLibrary::VLerp(InitLoc, (PlayerRef->GetCamera()->GetRightVector() * newScalar) + socketLocation, speedCurve);
 	FRotator newRot = FRotator(CameraRot.Pitch, CameraRot.Yaw, CameraRot.Roll + ReturnTilt);
 	FRotator lerpRot = UKismetMathLibrary::RLerp(InitRot, newRot, rot1, true);
 	FRotator finalRotation = UKismetMathLibrary::RLerp(lerpRot, socketRotation, rot2, true);
@@ -204,7 +235,7 @@ void ABaseThrowable::ReturnSpinAfterTime(float newPitch)
 
 float ABaseThrowable::GetClampedAxeDistanceFromChar(USkeletalMeshComponent* skeleton)
 {
-	FVector socketLoc = skeleton->GetSocketLocation("HandSocket");
+	FVector socketLoc = skeleton->GetSocketLocation("WeaponSocket");
 	FVector finalVector = GetActorLocation() - socketLoc; // gets the final vector from the hand socket and the actors current position 
 	return UKismetMathLibrary::FClamp(finalVector.Length(), 0, MaxDistance);
 }
@@ -222,7 +253,7 @@ FVector ABaseThrowable::AdjustAxeImpactLocation()
 	Z_Adjustment = pitch; // makes the z adjustment the value of pitch
 	ImpactLoc += FVector(0, 0, pitch); // assigns the impact loc to have the pithc value assigned to Z
 
-	FVector finalLoc = ImpactLoc - (GetActorLocation() - LodgePoint->GetComponentLocation()); // gets the final location based on the subtraction of the lodge point location from the actors and then subtracts tat from the impact location
+	FVector finalLoc = ImpactLoc - (LodgePoint->GetComponentLocation() - GetActorLocation()); // gets the final location based on the subtraction of the lodge point location from the actors and then subtracts tat from the impact location
 
 	return finalLoc;
 }

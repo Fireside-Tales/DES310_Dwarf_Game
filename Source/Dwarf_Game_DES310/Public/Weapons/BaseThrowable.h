@@ -29,16 +29,48 @@ public:
 	// Sets default values for this actor's properties
 	ABaseThrowable();
 
+	void Recall();
+	void Catch(USceneComponent* newParent);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+
+	UFUNCTION(BlueprintCallable)
+	void InitialiseReturnVariables();
+
+	UFUNCTION(BlueprintPure)
+	float AdjustAxeReturnTimelineSpeed();
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void StartAxeSpin();
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void StopAxeSpin();
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
-	void StopAxeMovement(); 
+	void StartReturnSpin(float speed);
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void StopReturnSpin();
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void StopAxeMovement();
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void StopReturnTrace();
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void StartReturnTrace();
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void LineTraceTimeline();
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void StopTrace();
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void ReturnPositionTimeline();
+	UFUNCTION(BlueprintImplementableEvent)
+	void RecallEvent();
+
+
+	UFUNCTION(BlueprintPure)
+	bool LineTrace(FHitResult& OutHit);
+	UFUNCTION(BlueprintPure)
+	bool InitSphere(FHitResult& OutHit);
 
 public:
 	// Called every frame
@@ -65,18 +97,20 @@ private:
 #pragma endregion
 
 #pragma region Variables
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player", meta = (AllowPrivateAccess = true))
 	TObjectPtr<APlayerEntity> PlayerRef;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "State", meta = (AllowPrivateAccess = true))
 	EAxeStates AxeState = EAxeStates::Idle;
 
 	FVector InitLoc;
 	FVector TargLoc;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Throw Stats|Positions", meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Throw Stats|Positions", meta = (AllowPrivateAccess = true))
 	FVector ImpactLoc;
 	FVector ImpactNormal;
 	FVector ThrowDir;
 	FVector CameraLoc;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Throw Stats|Positions", meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Throw Stats|Positions", meta = (AllowPrivateAccess = true))
 	FVector AxeLocationLastTick;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Throw Stats|Positions", meta = (AllowPrivateAccess = true))
 	FVector ReturnTargetLocations;
@@ -85,7 +119,7 @@ private:
 	FRotator CameraRot;
 	FRotator LodgePointRot;
 
-	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,  Category = "Throw Stats|Speed", meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Throw Stats|Speed", meta = (AllowPrivateAccess = true))
 	float AxeThrowSpeed;
 	float ThrowTraceDis = 60;
 	float Z_Adjustment;
@@ -97,7 +131,7 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Throw Stats|Speed", meta = (AllowPrivateAccess = true))
 	float AxeReturnSpeed;
-
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Throw Stats| Distance", meta = (AllowPrivateAccess = true))
 	float AxeReturnScale;
 	float ReturnTilt;
 
@@ -111,7 +145,7 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Throw Stats|Distance", meta = (AllowPrivateAccess = true))
 	float SpinLength;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Throw Stats|Distance", meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Throw Stats|Distance", meta = (AllowPrivateAccess = true))
 	int ReturnSpins;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Throw Stats|Distance", meta = (AllowPrivateAccess = true))
 	bool isWiggle;
@@ -127,7 +161,6 @@ private:
 	UFUNCTION()
 	void OnOverLapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	void InitialiseReturnVariables();
 	void InitialiseReturnTrace();
 
 
@@ -138,26 +171,25 @@ private:
 	void ThrowAxe();
 	void RecallLaunched();
 	void LaunchAxe();
-	void Catch(USceneComponent* newParent);
 
-
+	UFUNCTION(BlueprintCallable)
 	void HandleImpact(FVector ImpactNormal, FVector ImpactLocation);
+	UFUNCTION(BlueprintCallable)
 	void LodgeAxe();
 	void AdjustAxeReturnLocation();
 	void AxeLodgePull(float pull);
+	UFUNCTION(BlueprintCallable)
 	void ReturnPosition(float rot1, float rot2, float vectorCurve, float speedCurve, USkeletalMeshComponent* skeleton);
 	UFUNCTION(BlueprintCallable)
 	void ReturnSpin(float TimelineSpeed);
+	UFUNCTION(BlueprintCallable)
 	void ReturnSpinAfterTime(float newPitch);
 	float GetClampedAxeDistanceFromChar(USkeletalMeshComponent* skeleton);
 	FVector CalculateImpulseDirection();
 	FVector AdjustAxeImpactLocation();
 	void SnapToStart();
-	float AdjustAxeReturnTimelineSpeed();
+
 	float AdjustAxeImpactPitch();
-
-
-
 
 #pragma endregion
 };

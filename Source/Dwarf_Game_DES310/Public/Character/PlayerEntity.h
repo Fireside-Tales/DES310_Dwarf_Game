@@ -66,6 +66,11 @@ private:
 	UFUNCTION()
 	void ThrowAxe();
 
+	UFUNCTION(BlueprintCallable)
+	void Catch();
+	UFUNCTION(BlueprintCallable)
+	void Recall();
+
 
 
 #pragma endregion
