@@ -3,7 +3,7 @@
 
 #include "Collectable/Heirloom.h"
 #include "Character/PlayerEntity.h"
-
+#include "Components/CapsuleComponent.h"
 // Sets default values
 AHeirloom::AHeirloom()
 {
@@ -12,7 +12,7 @@ AHeirloom::AHeirloom()
 	HeirloomPivot = CreateOptionalDefaultSubobject<USceneComponent>(TEXT("Heirloom Pivot"));
 	HeirloomPivot->SetupAttachment(GetMesh());
 
-	GetMesh()->OnComponentBeginOverlap.AddDynamic(this, &AHeirloom::OnOverlapBegin); 
+	GetMesh()->OnComponentBeginOverlap.AddDynamic(this, &AHeirloom::OnOverlapBegin);
 }
 
 // Called when the game starts or when spawned
@@ -34,15 +34,17 @@ void AHeirloom::SnapToPlayer(APlayerEntity* player)
 	if (player)
 	{
 		FAttachmentTransformRules heirloomAttachRules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, true);
-		HeirloomPivot->AttachToComponent(player->GetMesh(), heirloomAttachRules, "Heirloom Socket");//Attaches the heirloom on the player
+		AttachToComponent(player->GetMesh(), heirloomAttachRules, "Heirloom Socket");//Attaches the heirloom on the player
+		player->SetHeirloom(true);
 		PlayerRef = player;
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Heirloom Attached"));
 	}
 }
 
 void AHeirloom::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	APlayerEntity* player = Cast<APlayerEntity>(OtherActor);
-	if (player && PlayerRef)
+	if (player && PlayerRef == nullptr)
 	{
 		SnapToPlayer(player);
 	}

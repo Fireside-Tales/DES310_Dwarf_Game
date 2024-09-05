@@ -28,7 +28,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UStaticMeshComponent* GetMesh() const { return Mesh; }
-
+	UCapsuleComponent* GetCollider() const { return Collider; }
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Meshes", meta = (AllowPrivateAccess = true))
 	TObjectPtr<UStaticMeshComponent> Mesh;

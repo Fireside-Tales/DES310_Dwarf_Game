@@ -87,8 +87,6 @@ void ABase_Player::Tick(float DeltaTime)
 	{
 		mb_HasHeirloom = false;
 	}
-	GetMesh();
-
 }
 
 // Called to bind functionality to input

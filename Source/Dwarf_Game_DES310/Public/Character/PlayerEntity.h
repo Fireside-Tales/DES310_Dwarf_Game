@@ -39,6 +39,8 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void DashFOV();
 
+	void SetHeirloom(bool Collected) { hasHeirloom = Collected; }
+
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
 	TObjectPtr<UPlayerStatsComponent> PlayerStatsComponent;
@@ -105,4 +107,6 @@ private:
 
 	FVector desiredSocketOffset;
 
+
+	bool hasHeirloom; 
 };
